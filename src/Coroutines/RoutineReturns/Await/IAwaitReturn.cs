@@ -1,6 +1,8 @@
-﻿namespace Coroutines
+﻿using System;
+
+namespace Coroutines
 {
-    public interface IAwaitReturn : IRoutineReturn
+    public interface IAwaitReturn : IRoutineReturn, IDisposable
     {
         bool IsStarted { get; }
 

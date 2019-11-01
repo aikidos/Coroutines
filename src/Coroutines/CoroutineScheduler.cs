@@ -9,6 +9,7 @@ namespace Coroutines
         private readonly List<Coroutine> _coroutines = new List<Coroutine>();
         private readonly Dictionary<Coroutine, IAwaitReturn> _pending = new Dictionary<Coroutine, IAwaitReturn>();
         private readonly CoroutineContext<TContextValue> _context;
+        private readonly object _lock = new object();
 
         public TContextValue ContextValue => _context.Value;
 
@@ -24,55 +25,82 @@ namespace Coroutines
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));
 
-            var coroutine = new Coroutine(() => factory(_context));
+            lock (_lock)
+            {
+                var coroutine = new Coroutine(() => factory(_context));
 
-            _coroutines.Add(coroutine);
+                _coroutines.Add(coroutine);
+            }
         }
 
         public bool Update()
         {
-            var garbage = _coroutines
-                .Where(coroutine =>
-                {
-                    if (!coroutine.MoveNext())
-                        return true;
-
-                    switch (coroutine.Current)
+            lock (_lock)
+            {
+                var garbage = _coroutines
+                    .Where(coroutine =>
                     {
-                        case IAwaitReturn await:
-                            _pending.Add(coroutine, await);
-                            await.Start();
+                        if (!coroutine.MoveNext()) 
                             return true;
 
-                        case ResetReturn _:
-                            coroutine.Reset();
-                            break;
-                    }
+                        switch (coroutine.Current)
+                        {
+                            case IAwaitReturn awaiter:
+                                _pending.Add(coroutine, awaiter);
+                                awaiter.Start();
+                                return true;
 
-                    return false;
-                })
-                .ToArray();
+                            case ResetReturn _:
+                                coroutine.Reset();
+                                break;
+                        }
 
-            foreach (var coroutine in garbage)
-            {
-                coroutine.Dispose();
-                _coroutines.Remove(coroutine);
+                        return false;
+                    })
+                    .ToArray();
+
+                foreach (var coroutine in garbage)
+                {
+                    coroutine.Dispose();
+                    _coroutines.Remove(coroutine);
+                }
+
+                foreach (var (coroutine, awaiter) in _pending
+                    .Where(pair => pair.Value.IsFinished))
+                {
+                    awaiter.Dispose();
+
+                    _pending.Remove(coroutine);
+                    _coroutines.Add(coroutine);
+                }
+
+                return _coroutines.Count > 0 || _pending.Count > 0;
             }
-
-            foreach (var coroutine in _pending
-                .Where(pair => pair.Value.IsFinished)
-                .Select(pair => pair.Key))
-            {
-                _pending.Remove(coroutine);
-                _coroutines.Add(coroutine);
-            }
-
-            return _coroutines.Count > 0 || _pending.Count > 0;
         }
 
         public void WaitAll()
         {
             while (Update()) { }
+        }
+
+        public void Dispose()
+        {
+            lock (_lock)
+            {
+                foreach (var coroutine in _coroutines)
+                {
+                    coroutine.Dispose();
+                }
+
+                foreach (var (coroutine, awaiter) in _pending)
+                {
+                    awaiter.Dispose();
+                    coroutine.Dispose();
+                }
+
+                _coroutines.Clear();
+                _pending.Clear();
+            }
         }
     }
 }

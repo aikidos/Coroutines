@@ -22,5 +22,8 @@ namespace Coroutines
 
             IsStarted = true;
         }
+
+        public void Dispose()
+        { }
     }
 }

@@ -20,9 +20,14 @@ namespace Coroutines
 
         public void Start()
         {
+            if (IsStarted) throw new InvalidOperationException();
+
             IsStarted = true;
 
             _task = _getTask();
         }
+
+        public void Dispose() 
+        { }
     }
 }

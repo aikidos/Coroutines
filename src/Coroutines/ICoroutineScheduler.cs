@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Coroutines
 {
-    public interface ICoroutineScheduler<TContextValue>
+    public interface ICoroutineScheduler<TContextValue> : IDisposable
     {
         TContextValue ContextValue { get; }
 

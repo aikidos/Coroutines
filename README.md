@@ -29,7 +29,7 @@ static IEnumerator<IRoutineReturn> Printer(CoroutineContext<int> context)
     yield return Routine.Reset;
 }
 
-var scheduler = new CoroutineScheduler<int>(0);
+using var scheduler = new CoroutineScheduler<int>(0);
 scheduler.Run(Counter);
 scheduler.Run(Printer);
 scheduler.WaitAll();
@@ -72,7 +72,7 @@ static IEnumerator<IRoutineReturn> CheckStatus(CoroutineContext<int> context)
     yield return Routine.Reset;
 }
 
-var scheduler = new CoroutineScheduler<int>(0);
+using var scheduler = new CoroutineScheduler<int>(0);
 scheduler.Run(CalculateLength);
 scheduler.Run(CheckStatus);
 scheduler.WaitAll();

@@ -10,7 +10,7 @@ namespace Coroutines.Tests
         public void Run_Single_Task()
         {
             // Arrange
-            ICoroutineScheduler<int> scheduler = new CoroutineScheduler<int>(5);
+            using var scheduler = new CoroutineScheduler<int>(5);
 
             static IEnumerator<IRoutineReturn> Counter(CoroutineContext<int> context)
             {
@@ -33,7 +33,7 @@ namespace Coroutines.Tests
         public void Run_Multiple_Task()
         {
             // Arrange
-            ICoroutineScheduler<(int, int)> scheduler = new CoroutineScheduler<(int, int)>((5, 0));
+            using var scheduler = new CoroutineScheduler<(int, int)>((5, 0));
 
             static IEnumerator<IRoutineReturn> Counter(CoroutineContext<(int Counter, int Result)> context)
             {
@@ -55,12 +55,11 @@ namespace Coroutines.Tests
 
             static IEnumerator<IRoutineReturn> CalculateFactorial(CoroutineContext<(int Counter, int Result)> context)
             {
+                if (context.Cancel) yield break;
+
                 var (counter, result) = context.Value;
 
-                if (context.Cancel) 
-                    yield break;
-
-                if (result == 0) 
+                if (result == 0)
                     result = 1;
 
                 result *= (counter + 1);
@@ -83,7 +82,7 @@ namespace Coroutines.Tests
         public void Await()
         {
             // Arrange
-            ICoroutineScheduler<string> scheduler = new CoroutineScheduler<string>(string.Empty);
+            using var scheduler = new CoroutineScheduler<string>(string.Empty);
 
             static IEnumerator<IRoutineReturn> ReceiveMessage(CoroutineContext<string> context)
             {
