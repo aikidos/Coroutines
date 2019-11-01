@@ -1,5 +1,5 @@
 # Coroutines
-Simple example of implementing coroutines in C#.
+A simple example of implementing coroutines in C#.
 
 ## Usage
 
