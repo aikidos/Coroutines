@@ -3,3 +3,4 @@ tests/Coroutines.Tests/obj
 tests/Coroutines.Tests/bin
 src/Coroutines/bin
 src/Coroutines/obj
+.idea

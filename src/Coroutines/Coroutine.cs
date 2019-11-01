@@ -26,6 +26,7 @@ namespace Coroutines
 
         public void Reset()
         {
+            _routine.Dispose();
             _routine = _factory();
         }
 
