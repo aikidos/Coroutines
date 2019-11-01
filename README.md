@@ -53,14 +53,35 @@ static IEnumerator<IRoutineReturn> CalculateLength(CoroutineContext<int> context
     });
 
     context.Value = result.Value.Length;
+
+    context.Cancel = true;
+}
+
+static IEnumerator<IRoutineReturn> CheckStatus(CoroutineContext<int> context)
+{
+    if (context.Cancel)
+    {
+        Console.WriteLine("Done!");
+
+        yield break;
+    }
+
+    Console.WriteLine("Please wait...");
+
+    yield return Routine.Delay(200);
+    yield return Routine.Reset;
 }
 
 var scheduler = new CoroutineScheduler<int>(0);
 scheduler.Run(CalculateLength);
-scheduler.WaitAll(); 
+scheduler.Run(CheckStatus);
+scheduler.WaitAll();
 
-Console.WriteLine(scheduler.ContextValue); 
+Console.WriteLine($"Length: {scheduler.ContextValue}");
 
-// Output:
-// 49964
+// Output result:
+// Please wait...
+// Please wait...
+// Done!
+// Length: 49940
 ```
