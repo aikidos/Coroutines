@@ -34,7 +34,7 @@ scheduler.Run(Counter);
 scheduler.Run(Printer);
 scheduler.WaitAll();
 
-// Output result:
+// Output:
 // 1
 // 2
 // 3
@@ -61,6 +61,6 @@ scheduler.WaitAll();
 
 Console.WriteLine(scheduler.ContextValue); 
 
-// Output result:
+// Output:
 // 49964
 ```
