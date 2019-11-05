@@ -10,7 +10,7 @@ static IEnumerator<IRoutineReturn> Counter()
 
     for (int i = 1; i <= 3; i++)
     {
-        Console.WriteLine(i.ToString());
+        Console.WriteLine(i);
 
         double delay = random.Next(1000);
 
