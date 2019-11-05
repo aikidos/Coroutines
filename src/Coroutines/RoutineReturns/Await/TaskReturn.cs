@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Coroutines
 {
-    internal sealed class TaskReturn : IAwaitReturn
+    internal sealed class TaskReturn : IRoutineAwaiter
     {
         private readonly Func<Task> _getTask;
 

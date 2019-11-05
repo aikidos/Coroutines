@@ -3,39 +3,38 @@ A simple example of implementing coroutines in C#.
 
 ## Usage
 
-Work with the general context:
-
 ```c#
-static IEnumerator<IRoutineReturn> Counter(CoroutineContext<int> context)
+static IEnumerator<IRoutineReturn> Counter()
 {
-    context.Value++;
+    var random = new Random();
 
-    if (context.Value >= 3)
+    for (int i = 1; i <= 3; i++)
     {
-        context.Cancel = true;
+        Console.WriteLine(i.ToString());
 
-        yield break;
+        double delay = random.Next(1000);
+
+        yield return Routine.Delay(delay);
     }
-
-    yield return Routine.Reset;
 }
 
-static IEnumerator<IRoutineReturn> Printer(CoroutineContext<int> context)
+using var scheduler = new CoroutineScheduler();
+
+for (int i = 0; i < 3; i++)
 {
-    Console.WriteLine(context.Value);
-
-    if (context.Cancel) yield break;
-
-    yield return Routine.Reset;
+    scheduler.Run(Counter);
 }
 
-using var scheduler = new CoroutineScheduler<int>(0);
-scheduler.Run(Counter);
-scheduler.Run(Printer);
 scheduler.WaitAll();
 
 // Output:
 // 1
+// 1
+// 1
+// 2
+// 3
+// 2
+// 3
 // 2
 // 3
 ```
@@ -43,7 +42,7 @@ scheduler.WaitAll();
 Waiting for a task to complete:
 
 ```c#
-static IEnumerator<IRoutineReturn> CalculateLength(CoroutineContext<int> context)
+static IEnumerator<IRoutineReturn> CalculateLength()
 {
     yield return Routine.Await(out var result, async () =>
     {
@@ -52,36 +51,13 @@ static IEnumerator<IRoutineReturn> CalculateLength(CoroutineContext<int> context
         return await client.GetStringAsync("https://www.google.com/");
     });
 
-    context.Value = result.Value.Length;
-
-    context.Cancel = true;
+    Console.WriteLine($"Length: {result.Value.Length}");
 }
 
-static IEnumerator<IRoutineReturn> CheckStatus(CoroutineContext<int> context)
-{
-    if (context.Cancel)
-    {
-        Console.WriteLine("Done!");
-
-        yield break;
-    }
-
-    Console.WriteLine("Please wait...");
-
-    yield return Routine.Delay(200);
-    yield return Routine.Reset;
-}
-
-using var scheduler = new CoroutineScheduler<int>(0);
+using var scheduler = new CoroutineScheduler();
 scheduler.Run(CalculateLength);
-scheduler.Run(CheckStatus);
 scheduler.WaitAll();
 
-Console.WriteLine($"Length: {scheduler.ContextValue}");
-
-// Output result:
-// Please wait...
-// Please wait...
-// Done!
-// Length: 49940
+// Output:
+// Length: 49950
 ```

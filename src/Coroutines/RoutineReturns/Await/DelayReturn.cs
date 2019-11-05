@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Coroutines
 {
-    internal sealed class DelayReturn : IAwaitReturn
+    internal sealed class DelayReturn : IRoutineAwaiter
     {
+        private readonly Stopwatch _stopwatch = new Stopwatch();
         private readonly TimeSpan _delay;
-        private DateTime _finishedDate;
 
         public bool IsStarted { get; private set; }
 
-        public bool IsFinished => IsStarted && DateTime.Now >= _finishedDate;
+        public bool IsFinished => IsStarted && _stopwatch.ElapsedMilliseconds >= _delay.Milliseconds;
 
         public DelayReturn(TimeSpan delay)
         {
@@ -18,9 +19,11 @@ namespace Coroutines
 
         public void Start()
         {
-            _finishedDate = DateTime.Now.Add(_delay);
+            if (IsStarted) throw new InvalidOperationException();
 
             IsStarted = true;
+
+            _stopwatch.Start();
         }
 
         public void Dispose()

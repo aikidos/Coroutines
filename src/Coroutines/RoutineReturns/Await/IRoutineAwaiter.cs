@@ -2,7 +2,7 @@
 
 namespace Coroutines
 {
-    public interface IAwaitReturn : IRoutineReturn, IDisposable
+    public interface IRoutineAwaiter : IRoutineReturn, IDisposable
     {
         bool IsStarted { get; }
 

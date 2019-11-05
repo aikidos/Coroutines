@@ -10,13 +10,15 @@ namespace Coroutines.Tests
         public void Run_Single_Task()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler<int>(5);
+            using var scheduler = new CoroutineScheduler();
 
-            static IEnumerator<IRoutineReturn> Counter(CoroutineContext<int> context)
+            int i = 5;
+
+            IEnumerator<IRoutineReturn> Counter()
             {
-                if (context.Value <= 0) yield break;
+                if (i <= 0) yield break;
 
-                context.Value--;
+                i--;
 
                 yield return Routine.Reset;
             }
@@ -26,26 +28,27 @@ namespace Coroutines.Tests
             scheduler.WaitAll();
 
             // Assert
-            Assert.Equal(0, scheduler.ContextValue);
+            Assert.Equal(0, i);
         }
 
         [Fact]
         public void Run_Multiple_Task()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler<(int, int)>((5, 0));
+            using var scheduler = new CoroutineScheduler();
 
-            static IEnumerator<IRoutineReturn> Counter(CoroutineContext<(int Counter, int Result)> context)
+            int i = 5;
+            int factorial = 0;
+
+            bool cancel = false;
+
+            IEnumerator<IRoutineReturn> Counter()
             {
-                var (counter, result) = context.Value;
+                i--;
 
-                counter--;
-
-                context.Value = (counter, result);
-
-                if (counter <= 0)
+                if (i <= 0)
                 {
-                    context.Cancel = true;
+                    cancel = true;
 
                     yield break;
                 }
@@ -53,18 +56,14 @@ namespace Coroutines.Tests
                 yield return Routine.Reset;
             }
 
-            static IEnumerator<IRoutineReturn> CalculateFactorial(CoroutineContext<(int Counter, int Result)> context)
+            IEnumerator<IRoutineReturn> CalculateFactorial()
             {
-                if (context.Cancel) yield break;
+                if (cancel) yield break;
 
-                var (counter, result) = context.Value;
+                if (factorial == 0)
+                    factorial = 1;
 
-                if (result == 0)
-                    result = 1;
-
-                result *= (counter + 1);
-
-                context.Value = (counter, result);
+                factorial *= (i + 1);
 
                 yield return Routine.Reset;
             }
@@ -75,20 +74,23 @@ namespace Coroutines.Tests
             scheduler.WaitAll();
 
             // Assert
-            Assert.Equal((0, 120), scheduler.ContextValue);
+            Assert.Equal(0, i);
+            Assert.Equal(120, factorial);
         }
 
         [Fact]
         public void Await()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler<string>(string.Empty);
+            using var scheduler = new CoroutineScheduler();
 
-            static IEnumerator<IRoutineReturn> ReceiveMessage(CoroutineContext<string> context)
+            string content = string.Empty;
+
+            IEnumerator<IRoutineReturn> ReceiveMessage()
             {
                 yield return Routine.Await(out var result, () => Task.FromResult("Hello, world!"));
 
-                context.Value = result.Value;
+                content = result.Value;
             }
 
             // Act
@@ -96,7 +98,7 @@ namespace Coroutines.Tests
             scheduler.WaitAll();
 
             // Assert
-            Assert.Equal("Hello, world!", scheduler.ContextValue);
+            Assert.Equal("Hello, world!", content);
         }
     }
 }

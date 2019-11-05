@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace Coroutines
 {
-    public interface ICoroutineScheduler<TContextValue> : IDisposable
+    public interface ICoroutineScheduler : IDisposable
     {
-        TContextValue ContextValue { get; }
-
-        void Run(Func<CoroutineContext<TContextValue>, IEnumerator<IRoutineReturn>> factory);
+        void Run(Func<IEnumerator<IRoutineReturn>> factory);
 
         bool Update();
 

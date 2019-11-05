@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Coroutines
 {
-    internal class TaskTReturn<TValue> : IAwaitReturn
+    internal class TaskTReturn<TValue> : IRoutineAwaiter
     {
         private readonly Func<AwaitResult<TValue>, Task> _getTask;
         private readonly AwaitResult<TValue> _result;
