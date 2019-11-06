@@ -5,7 +5,7 @@ namespace Coroutines
 {
     public interface ICoroutineScheduler : IDisposable
     {
-        void Run(Func<IEnumerator<IRoutineReturn>> factory);
+        ICoroutine Run(Func<IEnumerator<IRoutineReturn>> factory);
 
         bool Update();
 

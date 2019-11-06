@@ -9,15 +9,18 @@ namespace Coroutines
         private readonly List<CoroutineDecorator> _coroutines = new List<CoroutineDecorator>();
         private readonly object _lock = new object();
 
-        public void Run(Func<IEnumerator<IRoutineReturn>> factory)
+        public ICoroutine Run(Func<IEnumerator<IRoutineReturn>> factory)
         {
-            if (factory == null) throw new ArgumentNullException(nameof(factory));
+            if (factory == null) 
+                throw new ArgumentNullException(nameof(factory));
 
             lock (_lock)
             {
                 var coroutine = new CoroutineDecorator(factory);
 
                 _coroutines.Add(coroutine);
+
+                return coroutine;
             }
         }
 
@@ -25,7 +28,7 @@ namespace Coroutines
         {
             lock (_lock)
             {
-                var garbage = _coroutines
+                var finishedCoroutines = _coroutines
                     .Where(coroutine =>
                     {
                         if (coroutine.IsAwaiting)
@@ -49,7 +52,7 @@ namespace Coroutines
                     })
                     .ToArray();
 
-                foreach (var coroutine in garbage)
+                foreach (var coroutine in finishedCoroutines)
                 {
                     coroutine.Dispose();
                     _coroutines.Remove(coroutine);
@@ -61,7 +64,8 @@ namespace Coroutines
 
         public void WaitAll()
         {
-            while (Update()) { }
+            while (Update()) 
+            { }
         }
 
         public void Dispose()

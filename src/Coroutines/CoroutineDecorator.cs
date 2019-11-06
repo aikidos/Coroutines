@@ -4,27 +4,29 @@ using System.Collections.Generic;
 
 namespace Coroutines
 {
-    internal sealed class CoroutineDecorator : IEnumerator<IRoutineReturn>
+    internal sealed class CoroutineDecorator : ICoroutine, IEnumerator<IRoutineReturn?>
     {
-        object IEnumerator.Current => Current;
+        object? IEnumerator.Current => Current;
 
         private readonly Func<IEnumerator<IRoutineReturn>> _factory;
-        private IEnumerator<IRoutineReturn> _routine;
+        private IEnumerator<IRoutineReturn>? _routine;
         private IRoutineAwaiter? _awaiter;
 
-        public IRoutineReturn Current => _routine.Current;
+        public IRoutineReturn? Current => _routine?.Current;
 
         public bool IsAwaiting => _awaiter?.IsFinished == false;
+
+        public CoroutineStatus Status { get; private set; } = CoroutineStatus.WaitingToRun;
 
         public CoroutineDecorator(Func<IEnumerator<IRoutineReturn>> factory)
         {
             _factory = factory;
-            _routine = factory();
         }
 
         public void Await(IRoutineAwaiter awaiter)
         {
-            if (IsAwaiting || awaiter.IsStarted) throw new InvalidOperationException();
+            if (IsAwaiting || awaiter.IsStarted) 
+                throw new InvalidOperationException();
 
             _awaiter?.Dispose();
 
@@ -34,19 +36,39 @@ namespace Coroutines
 
         public bool MoveNext()
         {
-            return _routine.MoveNext();
+            if (Status == CoroutineStatus.RanToCompletion || 
+                Status == CoroutineStatus.Canceled)
+                return false;
+
+            if (_routine == null)
+            {
+                _routine = _factory();
+                Status = CoroutineStatus.Running;
+            }
+
+            bool update = _routine.MoveNext();
+
+            if (!update)
+                Status = CoroutineStatus.RanToCompletion;
+
+            return update;
         }
 
         public void Reset()
         {
-            _routine.Dispose();
+            _routine?.Dispose();
             _routine = _factory();
+        }
+
+        public void Cancel()
+        {
+            Status = CoroutineStatus.Canceled;
         }
 
         public void Dispose()
         {
             _awaiter?.Dispose();
-            _routine.Dispose();
+            _routine?.Dispose();
         }
     }
 }

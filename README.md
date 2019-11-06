@@ -1,7 +1,7 @@
 # Coroutines
-A simple example of implementing coroutines in C#.
+A simple implementing coroutines in C#.
 
-## Usage
+## Basic Usage
 
 ```c#
 static IEnumerator<IRoutineReturn> Counter()
@@ -39,10 +39,10 @@ scheduler.WaitAll();
 // 3
 ```
 
-Waiting for a task to complete:
+## Waiting for a Task to complete
 
 ```c#
-static IEnumerator<IRoutineReturn> CalculateLength()
+static IEnumerator<IRoutineReturn> GetLength()
 {
     yield return Routine.Await(out var result, async () =>
     {
@@ -55,9 +55,42 @@ static IEnumerator<IRoutineReturn> CalculateLength()
 }
 
 using var scheduler = new CoroutineScheduler();
-scheduler.Run(CalculateLength);
+scheduler.Run(GetLength);
 scheduler.WaitAll();
 
 // Output:
 // Length: 49950
+```
+
+## Check status and cancel execution
+
+```c#
+static IEnumerator<IRoutineReturn> DoSomething()
+{
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine(i);
+
+        yield return Routine.Yield;
+    }
+}
+
+using var scheduler = new CoroutineScheduler();
+
+ICoroutine coroutine = scheduler.Run(DoSomething);
+Console.WriteLine(coroutine.Status);
+
+scheduler.Update();
+Console.WriteLine(coroutine.Status);
+
+coroutine.Cancel();
+Console.WriteLine(coroutine.Status);
+
+scheduler.WaitAll();
+
+// Output:
+// WaitingToRun
+// 0
+// Running
+// Canceled
 ```

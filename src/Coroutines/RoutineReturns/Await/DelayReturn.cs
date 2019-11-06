@@ -19,7 +19,8 @@ namespace Coroutines
 
         public void Start()
         {
-            if (IsStarted) throw new InvalidOperationException();
+            if (IsStarted) 
+                throw new InvalidOperationException();
 
             IsStarted = true;
 
