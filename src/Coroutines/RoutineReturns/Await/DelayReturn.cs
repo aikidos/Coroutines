@@ -3,30 +3,53 @@ using System.Diagnostics;
 
 namespace Coroutines
 {
+    /// <summary>
+    /// Represents a synchronous task that will complete after a time delay.
+    /// </summary>
     internal sealed class DelayReturn : IRoutineAwaiter
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private readonly TimeSpan _delay;
+        private RoutineAwaiterStatus _status;
 
-        public bool IsStarted { get; private set; }
+        /// <inheritdoc />
+        public RoutineAwaiterStatus Status
+        {
+            get
+            {
+                if (_status == RoutineAwaiterStatus.Running &&
+                    _stopwatch.ElapsedMilliseconds >= _delay.Milliseconds)
+                {
+                    return RoutineAwaiterStatus.RanToCompletion;
+                }
 
-        public bool IsFinished => IsStarted && _stopwatch.ElapsedMilliseconds >= _delay.Milliseconds;
+                return _status;
+            }
 
+            private set => _status = value;
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="DelayReturn"/>.
+        /// </summary>
+        /// <param name="delay">Time delay.</param>
         public DelayReturn(TimeSpan delay)
         {
             _delay = delay;
         }
 
+        /// <inheritdoc />
         public void Start()
         {
-            if (IsStarted) 
+            if (Status != RoutineAwaiterStatus.WaitingToRun)
                 throw new InvalidOperationException();
 
-            IsStarted = true;
+            Status = RoutineAwaiterStatus.Running;
 
             _stopwatch.Start();
         }
 
+        /// <inheritdoc />
         public void Dispose()
         { }
     }

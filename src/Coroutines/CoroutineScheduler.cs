@@ -4,11 +4,15 @@ using System.Linq;
 
 namespace Coroutines
 {
+    /// <summary>
+    /// Implementation of the coroutine scheduler. 
+    /// </summary>
     public sealed class CoroutineScheduler : ICoroutineScheduler
     {
         private readonly List<CoroutineDecorator> _coroutines = new List<CoroutineDecorator>();
         private readonly object _lock = new object();
 
+        /// <inheritdoc />
         public ICoroutine Run(Func<IEnumerator<IRoutineReturn>> factory)
         {
             if (factory == null) 
@@ -24,6 +28,7 @@ namespace Coroutines
             }
         }
 
+        /// <inheritdoc />
         public bool Update()
         {
             lock (_lock)
@@ -62,12 +67,14 @@ namespace Coroutines
             }
         }
 
+        /// <inheritdoc />
         public void WaitAll()
         {
             while (Update()) 
             { }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             lock (_lock)

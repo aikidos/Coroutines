@@ -3,33 +3,56 @@ using System.Threading.Tasks;
 
 namespace Coroutines
 {
+    /// <summary>
+    /// Represents a asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
+    /// </summary>
     internal class TaskTReturn<TValue> : IRoutineAwaiter
     {
-        private readonly Func<AwaitResult<TValue>, Task> _getTask;
+        private readonly Func<AwaitResult<TValue>, Task> _taskFactory;
         private readonly AwaitResult<TValue> _result;
-
         private Task? _task;
+        private RoutineAwaiterStatus _status;
 
-        public bool IsStarted { get; private set; }
+        /// <inheritdoc />
+        public RoutineAwaiterStatus Status
+        {
+            get
+            {
+                if (_status == RoutineAwaiterStatus.Running &&
+                    _task?.IsCompleted == true)
+                {
+                    return RoutineAwaiterStatus.RanToCompletion;
+                }
 
-        public bool IsFinished => IsStarted && _task?.IsCompleted == true;
+                return _status;
+            }
 
-        public TaskTReturn(AwaitResult<TValue> result, Func<AwaitResult<TValue>, Task> getTask)
+            private set => _status = value;
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="TaskTReturn{TValue}"/>.
+        /// </summary>
+        /// <param name="result">Container for storing the result of a task.</param>
+        /// <param name="taskFactory">Task factory function.</param>
+        public TaskTReturn(AwaitResult<TValue> result, Func<AwaitResult<TValue>, Task> taskFactory)
         {
             _result = result;
-            _getTask = getTask;
+            _taskFactory = taskFactory;
         }
 
+        /// <inheritdoc />
         public void Start()
         {
-            if (IsStarted) 
+            if (Status != RoutineAwaiterStatus.WaitingToRun) 
                 throw new InvalidOperationException();
 
-            IsStarted = true;
+            Status = RoutineAwaiterStatus.Running;
 
-            _task = _getTask(_result);
+            _task = _taskFactory(_result);
         }
 
+        /// <inheritdoc />
         public void Dispose()
         { }
     }

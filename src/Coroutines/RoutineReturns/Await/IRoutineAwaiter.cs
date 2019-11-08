@@ -2,12 +2,19 @@
 
 namespace Coroutines
 {
+    /// <summary>
+    /// Interface used for implementing routine awaiter.
+    /// </summary>
     public interface IRoutineAwaiter : IRoutineReturn, IDisposable
     {
-        bool IsStarted { get; }
+        /// <summary>
+        /// Current status.
+        /// </summary>
+        RoutineAwaiterStatus Status { get; }
 
-        bool IsFinished { get; }
-
+        /// <summary>
+        /// Starts a task.
+        /// </summary>
         void Start();
     }
 }

@@ -3,31 +3,53 @@ using System.Threading.Tasks;
 
 namespace Coroutines
 {
+    /// <summary>
+    /// Represents a asynchronous task that will complete after an internal <see cref="Task"/> is completed.
+    /// </summary>
     internal sealed class TaskReturn : IRoutineAwaiter
     {
-        private readonly Func<Task> _getTask;
-
+        private readonly Func<Task> _taskFactory;
         private Task? _task;
+        private RoutineAwaiterStatus _status;
 
-        public bool IsStarted { get; private set; }
-
-        public bool IsFinished => IsStarted && _task?.IsCompleted == true;
-
-        public TaskReturn(Func<Task> getTask)
+        /// <inheritdoc />
+        public RoutineAwaiterStatus Status
         {
-            _getTask = getTask;
+            get
+            {
+                if (_status == RoutineAwaiterStatus.Running &&
+                    _task?.IsCompleted == true)
+                {
+                    return RoutineAwaiterStatus.RanToCompletion;
+                }
+
+                return _status;
+            }
+
+            private set => _status = value;
         }
 
+        /// <summary>
+        /// Initializes a new <see cref="TaskReturn"/>.
+        /// </summary>
+        /// <param name="taskFactory">Task factory function.</param>
+        public TaskReturn(Func<Task> taskFactory)
+        {
+            _taskFactory = taskFactory;
+        }
+
+        /// <inheritdoc />
         public void Start()
         {
-            if (IsStarted) 
+            if (Status != RoutineAwaiterStatus.WaitingToRun)
                 throw new InvalidOperationException();
 
-            IsStarted = true;
+            Status = RoutineAwaiterStatus.Running;
 
-            _task = _getTask();
+            _task = _taskFactory();
         }
 
+        /// <inheritdoc />
         public void Dispose() 
         { }
     }
