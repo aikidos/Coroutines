@@ -99,7 +99,7 @@ scheduler.WaitAll();
 ```
 
 **Output:**
-> WaitingToRu  
+> WaitingToRun  
 0  
 Running  
 Canceled
