@@ -1,6 +1,10 @@
 # Coroutines
 A simple implementing coroutines in C#.
 
+* [Basic Usage](#basic-usage)
+* [TPL](#tpl)
+* [Check status and cancel execution](#check-status-and-cancel-execution)
+
 ## Basic Usage
 
 ```c#
@@ -44,7 +48,7 @@ scheduler.WaitAll();
 3  
 3  
 
-## Waiting for a Task to complete
+## TPL
 
 ```c#
 static IEnumerator<IRoutineReturn> GetLength()
