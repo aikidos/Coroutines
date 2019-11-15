@@ -38,11 +38,11 @@ scheduler.WaitAll();
 1  
 1  
 2  
-3  
 2  
 3  
 2  
-3
+3  
+3  
 
 ## Waiting for a Task to complete
 
