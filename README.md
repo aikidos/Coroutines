@@ -78,7 +78,7 @@ static IEnumerator<IRoutineReturn> DoSomething()
 {
     for (int i = 0; i < 10; i++)
     {
-        Console.WriteLine(i);
+        Console.WriteLine($"i = {i}");
 
         yield return Routine.Yield;
     }
@@ -87,19 +87,19 @@ static IEnumerator<IRoutineReturn> DoSomething()
 using var scheduler = new CoroutineScheduler();
 
 ICoroutine coroutine = scheduler.Run(DoSomething);
-Console.WriteLine(coroutine.Status);
+Console.WriteLine($"Status: {coroutine.Status}");
 
 scheduler.Update();
-Console.WriteLine(coroutine.Status);
+Console.WriteLine($"Status: {coroutine.Status}");
 
 coroutine.Cancel();
-Console.WriteLine(coroutine.Status);
+Console.WriteLine($"Status: {coroutine.Status}");
 
 scheduler.WaitAll();
 ```
 
 **Output:**
-> WaitingToRun  
-0  
-Running  
-Canceled
+> Status: WaitingToRun  
+i = 0  
+Status: Running  
+Status: Canceled  
