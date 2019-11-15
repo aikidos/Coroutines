@@ -19,7 +19,7 @@ namespace Coroutines
         public static IRoutineReturn Reset { get; } = new ResetReturn();
 
         /// <summary>
-        /// Returns synchronous task that will complete after a time delay.
+        /// Returns a synchronous task that will complete after a time delay.
         /// </summary>
         /// <param name="delay">Time delay.</param>
         public static IRoutineReturn Delay(TimeSpan delay)
@@ -28,7 +28,7 @@ namespace Coroutines
         }
 
         /// <summary>
-        /// Returns synchronous task that will complete after a time delay.
+        /// Returns a synchronous task that will complete after a time delay.
         /// </summary>
         /// <param name="milliseconds">Time delay (in milliseconds).</param>
         public static IRoutineReturn Delay(double milliseconds)
@@ -37,7 +37,7 @@ namespace Coroutines
         }
 
         /// <summary>
-        /// Returns asynchronous task that will complete after an internal <see cref="Task"/> is completed.
+        /// Returns an asynchronous task that will complete after an internal <see cref="Task"/> is completed.
         /// </summary>
         /// <param name="taskFactory">Task factory function.</param>
         public static IRoutineReturn Await(Func<Task> taskFactory)
@@ -49,7 +49,7 @@ namespace Coroutines
         }
 
         /// <summary>
-        /// Returns asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
+        /// Returns an asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
         /// </summary>
         /// <param name="result">Container for storing the result of a task.</param>
         /// <param name="taskFactory">Task factory function.</param>

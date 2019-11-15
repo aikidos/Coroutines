@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Coroutines
 {
     /// <summary>
-    /// Represents a asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
+    /// Represents an asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
     /// </summary>
     internal class TaskTReturn<TValue> : IRoutineAwaiter
     {

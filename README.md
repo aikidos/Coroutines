@@ -4,6 +4,7 @@ A simple implementing coroutines in C#.
 ## Basic Usage
 
 ```c#
+// Routine description.
 static IEnumerator<IRoutineReturn> Counter()
 {
     var random = new Random();
@@ -14,30 +15,34 @@ static IEnumerator<IRoutineReturn> Counter()
 
         double delay = random.Next(1000);
 
+        // Wait for a random time.
         yield return Routine.Delay(delay);
     }
 }
 
+// Create new scheduler.
 using var scheduler = new CoroutineScheduler();
 
 for (int i = 0; i < 3; i++)
 {
+    // Start new coroutine execution.
     scheduler.Run(Counter);
 }
 
+// Wait for all running coroutines to complete.
 scheduler.WaitAll();
-
-// Output:
-// 1
-// 1
-// 1
-// 2
-// 3
-// 2
-// 3
-// 2
-// 3
 ```
+
+**Output:**  
+> 1  
+1  
+1  
+2  
+3  
+2  
+3  
+2  
+3
 
 ## Waiting for a Task to complete
 
@@ -57,10 +62,10 @@ static IEnumerator<IRoutineReturn> GetLength()
 using var scheduler = new CoroutineScheduler();
 scheduler.Run(GetLength);
 scheduler.WaitAll();
-
-// Output:
-// Length: 49950
 ```
+
+**Output:**  
+> Length: 49950
 
 ## Check status and cancel execution
 
@@ -87,10 +92,10 @@ coroutine.Cancel();
 Console.WriteLine(coroutine.Status);
 
 scheduler.WaitAll();
-
-// Output:
-// WaitingToRun
-// 0
-// Running
-// Canceled
 ```
+
+**Output:**
+> WaitingToRu  
+0  
+Running  
+Canceled
