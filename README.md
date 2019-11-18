@@ -94,6 +94,6 @@ scheduler.WaitAll();
 
 **Output:**
 > Status: WaitingToRun  
-Hello, world! 
+Hello, world!  
 Status: Running  
 Status: Canceled  
