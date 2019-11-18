@@ -15,7 +15,7 @@ static IEnumerator<IRoutineReturn> Counter()
 
     for (int i = 1; i <= 3; i++)
     {
-        Console.WriteLine(i);
+        Console.Write(i);
 
         double delay = random.Next(1000);
 
@@ -38,21 +38,15 @@ scheduler.WaitAll();
 ```
 
 **Output:**  
-> 1  
-1  
-1  
-2  
-2  
-3  
-2  
-3  
-3  
+> 111223233
 
 ## TPL
 
 ```c#
 static IEnumerator<IRoutineReturn> GetLength()
 {
+    // Wait for the task to complete. 
+    // At this point, execution is passed to another routine.
     yield return Routine.Await(out var result, async () =>
     {
         using var client = new HttpClient();
@@ -78,7 +72,7 @@ static IEnumerator<IRoutineReturn> DoSomething()
 {
     for (int i = 0; i < 10; i++)
     {
-        Console.WriteLine($"i = {i}");
+        Console.WriteLine("Hello, world!");
 
         yield return Routine.Yield;
     }
@@ -100,6 +94,6 @@ scheduler.WaitAll();
 
 **Output:**
 > Status: WaitingToRun  
-i = 0  
+Hello, world! 
 Status: Running  
 Status: Canceled  
