@@ -1,3 +1,5 @@
+![Actions Status](https://github.com/aikidos/Coroutines/workflows/build/badge.svg)
+
 Coroutines
 ===
 
