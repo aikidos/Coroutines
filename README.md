@@ -46,7 +46,7 @@ scheduler.WaitAll();
 static IEnumerator<IRoutineReturn> GetLength()
 {
     // Wait for the task to complete. 
-    // At this point, execution is passed to another routine.
+    // At this point, execution pass to another routine.
     yield return Routine.Await(out var result, async () =>
     {
         using var client = new HttpClient();
