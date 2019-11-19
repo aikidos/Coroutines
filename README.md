@@ -1,11 +1,10 @@
-# Coroutines
+Coroutines
+===
+
 A simple implementing coroutines in C#.
 
-* [Basic Usage](#basic-usage)
-* [TPL](#tpl)
-* [Check status and cancel execution](#check-status-and-cancel-execution)
-
-## Basic Usage
+Example
+---
 
 ```c#
 // Routine description.
@@ -37,10 +36,11 @@ for (int i = 0; i < 3; i++)
 scheduler.WaitAll();
 ```
 
-**Output:**  
+*Output:*
 > 111223233
 
-## TPL
+TPL
+---
 
 ```c#
 static IEnumerator<IRoutineReturn> GetLength()
@@ -62,10 +62,11 @@ scheduler.Run(GetLength);
 scheduler.WaitAll();
 ```
 
-**Output:**  
+*Output:*  
 > Length: 49950
 
-## Check status and cancel execution
+Check status and cancel execution
+---
 
 ```c#
 static IEnumerator<IRoutineReturn> DoSomething()
@@ -92,7 +93,7 @@ Console.WriteLine($"Status: {coroutine.Status}");
 scheduler.WaitAll();
 ```
 
-**Output:**
+*Output:*
 > Status: WaitingToRun  
 Hello, world!  
 Status: Running  
