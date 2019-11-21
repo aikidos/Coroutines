@@ -12,6 +12,7 @@ namespace Coroutines
         /// Starts coroutine execution.
         /// </summary>
         /// <param name="factory">Routine factory function.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="factory"/> parameter is null.</exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineReturn&gt; DoSomething()

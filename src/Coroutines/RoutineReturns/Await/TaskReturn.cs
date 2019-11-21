@@ -33,9 +33,10 @@ namespace Coroutines
         /// Initializes a new <see cref="TaskReturn"/>.
         /// </summary>
         /// <param name="taskFactory">Task factory function.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
         public TaskReturn(Func<Task> taskFactory)
         {
-            _taskFactory = taskFactory;
+            _taskFactory = taskFactory ?? throw new ArgumentNullException(nameof(taskFactory));
         }
 
         /// <inheritdoc />

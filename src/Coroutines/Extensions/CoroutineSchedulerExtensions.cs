@@ -13,6 +13,10 @@ namespace Coroutines
         /// </summary>
         /// <param name="scheduler">Implementation of <see cref="ICoroutineScheduler"/>.</param>
         /// <param name="factories">Routine factory functions.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="scheduler"/> parameter is null.
+        ///     The <paramref name="factories"/> parameter is null.
+        /// </exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineReturn&gt; Hello()

@@ -88,6 +88,7 @@ namespace Coroutines
         /// Returns an asynchronous task that will complete after an internal <see cref="Task"/> is completed.
         /// </summary>
         /// <param name="taskFactory">Task factory function.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineReturn&gt; DoSomething()
@@ -113,6 +114,7 @@ namespace Coroutines
         /// </summary>
         /// <param name="result">Container for storing the result of a task.</param>
         /// <param name="taskFactory">Task factory function.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineReturn&gt; DoSomething()

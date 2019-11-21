@@ -35,10 +35,14 @@ namespace Coroutines
         /// </summary>
         /// <param name="result">Container for storing the result of a task.</param>
         /// <param name="taskFactory">Task factory function.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="result"/> parameter is null.
+        ///     The <paramref name="taskFactory"/> parameter is null.
+        /// </exception>
         public TaskTReturn(AwaitResult<TValue> result, Func<AwaitResult<TValue>, Task> taskFactory)
         {
-            _result = result;
-            _taskFactory = taskFactory;
+            _result = result ?? throw new ArgumentNullException(nameof(result));
+            _taskFactory = taskFactory ?? throw new ArgumentNullException(nameof(taskFactory));
         }
 
         /// <inheritdoc />

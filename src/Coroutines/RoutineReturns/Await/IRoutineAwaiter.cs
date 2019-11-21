@@ -15,6 +15,7 @@ namespace Coroutines
         /// <summary>
         /// Starts a task.
         /// </summary>
+        /// <exception cref="InvalidOperationException">If the current <see cref="Status"/> is not <see cref="RoutineAwaiterStatus.WaitingToRun"/>.</exception>
         void Start();
     }
 }

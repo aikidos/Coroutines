@@ -17,9 +17,10 @@ namespace Coroutines
         /// Initializes a new <see cref="Coroutine"/>.
         /// </summary>
         /// <param name="factory">Routine factory function.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="factory"/> parameter is null.</exception>
         public Coroutine(Func<IEnumerator<IRoutineReturn>> factory)
         {
-            _factory = factory;
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <inheritdoc />
