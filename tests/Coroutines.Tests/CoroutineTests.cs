@@ -70,7 +70,7 @@ namespace Coroutines.Tests
 
             static IEnumerator<IRoutineReturn> Coroutine()
             {
-                yield return Routine.Result("Hello, world!");
+                yield return Routine.Result("Hello, World!");
                 yield return Routine.Result("Ignore.");
             }
 
@@ -79,7 +79,7 @@ namespace Coroutines.Tests
             var result = coroutine.GetResult();
 
             // Assert
-            Assert.Equal("Hello, world!", result);
+            Assert.Equal("Hello, World!", result);
             Assert.Equal(CoroutineStatus.RanToCompletion, coroutine.Status);
         }
         
@@ -93,7 +93,7 @@ namespace Coroutines.Tests
 
             IEnumerator<IRoutineReturn> Coroutine()
             {
-                yield return Routine.Await(out var result, () => Task.FromResult("Hello, world!"));
+                yield return Routine.Await(out var result, () => Task.FromResult("Hello, World!"));
 
                 content = result.Value;
             }
@@ -102,7 +102,7 @@ namespace Coroutines.Tests
             scheduler.Run(Coroutine).Wait();
 
             // Assert
-            Assert.Equal("Hello, world!", content);
+            Assert.Equal("Hello, World!", content);
         }
     }
 }

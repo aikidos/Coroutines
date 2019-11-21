@@ -9,7 +9,7 @@ namespace Coroutines
     /// </summary>
     public sealed class CoroutineScheduler : ICoroutineScheduler
     {
-        private readonly List<CoroutineDecorator> _coroutines = new List<CoroutineDecorator>();
+        private readonly List<Coroutine> _coroutines = new List<Coroutine>();
         private readonly object _lock = new object();
 
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Coroutines
 
             lock (_lock)
             {
-                var coroutine = new CoroutineDecorator(factory);
+                var coroutine = new Coroutine(factory);
 
                 _coroutines.Add(coroutine);
 
@@ -33,14 +33,12 @@ namespace Coroutines
         {
             lock (_lock)
             {
-                var finishedCoroutines = _coroutines
+                foreach (var finishedCoroutine in _coroutines
                     .Where(coroutine => !coroutine.Update())
-                    .ToArray();
-
-                foreach (var coroutine in finishedCoroutines)
+                    .ToArray())
                 {
-                    coroutine.Dispose();
-                    _coroutines.Remove(coroutine);
+                    finishedCoroutine.Dispose();
+                    _coroutines.Remove(finishedCoroutine);
                 }
 
                 return _coroutines.Count > 0;

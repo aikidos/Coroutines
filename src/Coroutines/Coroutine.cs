@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Coroutines
 {
-    internal sealed class CoroutineDecorator : ICoroutine, IDisposable
+    internal sealed class Coroutine : ICoroutine, IDisposable
     {
         private readonly Func<IEnumerator<IRoutineReturn>> _factory;
         private IEnumerator<IRoutineReturn>? _routine;
@@ -14,10 +14,10 @@ namespace Coroutines
         public CoroutineStatus Status { get; private set; } = CoroutineStatus.WaitingToRun;
 
         /// <summary>
-        /// Initializes a new <see cref="CoroutineDecorator"/>.
+        /// Initializes a new <see cref="Coroutine"/>.
         /// </summary>
         /// <param name="factory">Routine factory function.</param>
-        public CoroutineDecorator(Func<IEnumerator<IRoutineReturn>> factory)
+        public Coroutine(Func<IEnumerator<IRoutineReturn>> factory)
         {
             _factory = factory;
         }
@@ -33,7 +33,8 @@ namespace Coroutines
         /// <inheritdoc />
         public bool Update()
         {
-            if (_awaiter != null && _awaiter.Status != RoutineAwaiterStatus.RanToCompletion)
+            if (_awaiter != null && 
+                _awaiter.Status != RoutineAwaiterStatus.RanToCompletion)
             {
                 return true;
             }
@@ -91,12 +92,17 @@ namespace Coroutines
         /// <inheritdoc />
         public void Cancel()
         {
+            if (Status == CoroutineStatus.RanToCompletion)
+                return;
+            
             Status = CoroutineStatus.Canceled;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
+            Cancel();
+            
             _awaiter?.Dispose();
             _routine?.Dispose();
         }
