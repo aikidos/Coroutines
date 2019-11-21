@@ -41,7 +41,7 @@ scheduler.WaitAll();
 *Output:*
 > 111223233
 
-TPL
+Await
 ---
 
 ```c#
@@ -60,43 +60,36 @@ static IEnumerator<IRoutineReturn> GetLength()
 }
 
 using var scheduler = new CoroutineScheduler();
-scheduler.Run(GetLength);
-scheduler.WaitAll();
+var coroutine = scheduler.Run(GetLength);
+coroutine.Wait();
 ```
 
 *Output:*  
 > Length: 49950
 
-Check status and cancel execution
+Result
 ---
 
 ```c#
 static IEnumerator<IRoutineReturn> DoSomething()
 {
-    for (int i = 0; i < 10; i++)
-    {
-        Console.WriteLine("Hello, world!");
-
-        yield return Routine.Yield;
-    }
+    // `Routine.Result` completes the routine like a `yield break`.
+    yield return Routine.Result("Hello, World!");
 }
 
 using var scheduler = new CoroutineScheduler();
+var coroutine = scheduler.Run(DoSomething);
 
-ICoroutine coroutine = scheduler.Run(DoSomething);
 Console.WriteLine($"Status: {coroutine.Status}");
 
-scheduler.Update();
+var result = coroutine.GetResult();
+
 Console.WriteLine($"Status: {coroutine.Status}");
 
-coroutine.Cancel();
-Console.WriteLine($"Status: {coroutine.Status}");
-
-scheduler.WaitAll();
+Console.WriteLine(result);
 ```
 
 *Output:*
 > Status: WaitingToRun  
-Hello, world!  
-Status: Running  
-Status: Canceled  
+Status: RanToCompletion  
+Hello, World!  
