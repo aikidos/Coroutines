@@ -34,27 +34,7 @@ namespace Coroutines
             lock (_lock)
             {
                 var finishedCoroutines = _coroutines
-                    .Where(coroutine =>
-                    {
-                        if (coroutine.IsAwaiting)
-                            return false;
-
-                        if (!coroutine.MoveNext()) 
-                            return true;
-
-                        switch (coroutine.Current)
-                        {
-                            case IRoutineAwaiter awaiter:
-                                coroutine.Await(awaiter);
-                                break;
-
-                            case ResetReturn _:
-                                coroutine.Reset();
-                                break;
-                        }
-
-                        return false;
-                    })
+                    .Where(coroutine => !coroutine.Update())
                     .ToArray();
 
                 foreach (var coroutine in finishedCoroutines)

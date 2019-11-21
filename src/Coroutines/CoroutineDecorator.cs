@@ -1,24 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Coroutines
 {
-    internal sealed class CoroutineDecorator : ICoroutine, IEnumerator<IRoutineReturn?>
+    internal sealed class CoroutineDecorator : ICoroutine, IDisposable
     {
-        object? IEnumerator.Current => Current;
-
         private readonly Func<IEnumerator<IRoutineReturn>> _factory;
         private IEnumerator<IRoutineReturn>? _routine;
         private IRoutineAwaiter? _awaiter;
-
-        /// <inheritdoc />
-        public IRoutineReturn? Current => _routine?.Current;
-
-        /// <summary>
-        /// If the coroutine is waiting for the completion of the background task then returns `True`.
-        /// </summary>
-        public bool IsAwaiting => _awaiter != null && _awaiter.Status != RoutineAwaiterStatus.RanToCompletion;
+        private object? _result;
 
         /// <inheritdoc />
         public CoroutineStatus Status { get; private set; } = CoroutineStatus.WaitingToRun;
@@ -32,24 +22,22 @@ namespace Coroutines
             _factory = factory;
         }
 
-        /// <summary>
-        /// Starts waiting for the completion of the task.
-        /// </summary>
-        /// <param name="awaiter">Implementation of <see cref="IRoutineAwaiter"/>.</param>
-        public void Await(IRoutineAwaiter awaiter)
+        /// <inheritdoc />
+        public object? GetResult()
         {
-            if (IsAwaiting || awaiter.Status != RoutineAwaiterStatus.WaitingToRun) 
-                throw new InvalidOperationException();
+            Wait();
 
-            _awaiter?.Dispose();
-
-            _awaiter = awaiter;
-            _awaiter.Start();
+            return _result;
         }
 
         /// <inheritdoc />
-        public bool MoveNext()
+        public bool Update()
         {
+            if (_awaiter != null && _awaiter.Status != RoutineAwaiterStatus.RanToCompletion)
+            {
+                return true;
+            }
+            
             if (Status == CoroutineStatus.RanToCompletion ||
                 Status == CoroutineStatus.Canceled)
             {
@@ -68,15 +56,36 @@ namespace Coroutines
             {
                 Status = CoroutineStatus.RanToCompletion;
             }
+            else
+            {
+                switch (_routine.Current)
+                {
+                    case IRoutineAwaiter awaiter:
+                        _awaiter?.Dispose();
+                        _awaiter = awaiter;
+                        _awaiter.Start();
+                        break;
+
+                    case ResetReturn _:
+                        _routine?.Dispose();
+                        _routine = _factory();
+                        break;
+                            
+                    case ResultReturn result:
+                        _result = result.Value;
+                        Status = CoroutineStatus.RanToCompletion;
+                        break;
+                }
+            }
 
             return update;
         }
 
         /// <inheritdoc />
-        public void Reset()
+        public void Wait()
         {
-            _routine?.Dispose();
-            _routine = _factory();
+            while(Update()) 
+            { }
         }
 
         /// <inheritdoc />

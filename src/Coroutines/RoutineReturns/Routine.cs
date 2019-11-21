@@ -126,7 +126,7 @@ namespace Coroutines
         ///             return await client.GetStringAsync("https://www.google.com/");
         ///         });
         ///         
-        ///         Console.WriteLine($"Length: {result.Value.Length}");
+        ///         Console.WriteLine($"Length: {result.Value.Length}"); // Length: 49950
         ///     } 
         /// </code>
         /// </example>
@@ -139,5 +139,28 @@ namespace Coroutines
 
             return new TaskTReturn<TValue>(result, async res => res.Value = await taskFactory());
         }
+        
+        /// <summary>
+        /// Returns the result of a routine.
+        /// </summary>
+        /// <param name="value">Value.</param>
+        /// <example>
+        /// <code>
+        ///     static IEnumerator&lt;IRoutineReturn&gt; DoSomething()
+        ///     {
+        ///         // `Routine.Result` completes the routine like a `yield break`.
+        ///         yield return Routine.Result("Hello, World!");
+        ///     }
+        ///  
+        ///     using var scheduler = new CoroutineScheduler();
+        ///  
+        ///     var coroutine = scheduler.Run(DoSomething);
+        ///  
+        ///     var result = coroutine.GetResult();
+        ///  
+        ///     Console.WriteLine(result); // Hello, World!
+        /// </code>
+        /// </example>
+        public static IRoutineReturn Result(object value) => new ResultReturn(value);
     }
 }
