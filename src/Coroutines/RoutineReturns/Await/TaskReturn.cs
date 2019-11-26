@@ -10,24 +10,9 @@ namespace Coroutines
     {
         private readonly Func<Task> _taskFactory;
         private Task? _task;
-        private RoutineAwaiterStatus _status;
 
         /// <inheritdoc />
-        public RoutineAwaiterStatus Status
-        {
-            get
-            {
-                if (_status == RoutineAwaiterStatus.Running &&
-                    _task?.IsCompleted == true)
-                {
-                    return RoutineAwaiterStatus.RanToCompletion;
-                }
-
-                return _status;
-            }
-
-            private set => _status = value;
-        }
+        public RoutineAwaiterStatus Status { get; private set; } = RoutineAwaiterStatus.WaitingToRun;
 
         /// <summary>
         /// Initializes a new <see cref="TaskReturn"/>.
@@ -40,14 +25,28 @@ namespace Coroutines
         }
 
         /// <inheritdoc />
-        public void Start()
+        public bool Update()
         {
-            if (Status != RoutineAwaiterStatus.WaitingToRun)
-                throw new InvalidOperationException();
+            switch (Status)
+            {
+                case RoutineAwaiterStatus.WaitingToRun:
+                    Status = RoutineAwaiterStatus.Running;
+                    _task = _taskFactory();
+                    return true;
 
-            Status = RoutineAwaiterStatus.Running;
+                case RoutineAwaiterStatus.Running:
+                    if (_task?.IsCompleted != true) 
+                        return true;
+                    
+                    Status = RoutineAwaiterStatus.RanToCompletion;
+                    return false;
 
-            _task = _taskFactory();
+                case RoutineAwaiterStatus.RanToCompletion:
+                    return false;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <inheritdoc />

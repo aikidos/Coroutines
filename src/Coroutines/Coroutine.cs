@@ -34,16 +34,15 @@ namespace Coroutines
         /// <inheritdoc />
         public bool Update()
         {
-            if (_awaiter != null && 
-                _awaiter.Status != RoutineAwaiterStatus.RanToCompletion)
-            {
-                return true;
-            }
-            
             if (Status == CoroutineStatus.RanToCompletion ||
                 Status == CoroutineStatus.Canceled)
             {
                 return false;
+            }
+
+            if (_awaiter != null && _awaiter.Update())
+            {
+                return true;
             }
 
             if (_routine == null)
@@ -65,7 +64,7 @@ namespace Coroutines
                     case IRoutineAwaiter awaiter:
                         _awaiter?.Dispose();
                         _awaiter = awaiter;
-                        _awaiter.Start();
+                        _awaiter.Update();
                         break;
 
                     case ResetReturn _:

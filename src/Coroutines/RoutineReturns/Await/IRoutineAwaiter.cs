@@ -13,9 +13,10 @@ namespace Coroutines
         RoutineAwaiterStatus Status { get; }
 
         /// <summary>
-        /// Starts a task.
+        /// Updates the execution logic of the current awaiter.
+        /// If incomplete then returns `True`.
+        /// Execution status can also be checked through the <see cref="Status"/> property.
         /// </summary>
-        /// <exception cref="InvalidOperationException">If the current <see cref="Status"/> is not <see cref="RoutineAwaiterStatus.WaitingToRun"/>.</exception>
-        void Start();
+        bool Update();
     }
 }
