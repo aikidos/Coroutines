@@ -10,6 +10,8 @@ A simple implementing coroutines in C#.
 Example
 ---
 
+On platforms supporting netstandard 2.1+
+
 ```c#
 // Routine description.
 static IEnumerator<IRoutineReturn> Counter()
@@ -95,3 +97,8 @@ Console.WriteLine(result);
 > Status: WaitingToRun  
 Status: RanToCompletion  
 Hello, World!  
+
+Licence
+===
+
+[MIT](https://en.wikipedia.org/wiki/MIT_License)
