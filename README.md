@@ -5,6 +5,8 @@ Coroutines
 
 A simple implementing coroutines in C#.
 
+[![example](/examples/Coroutines.Examples.Animations/animation.gif)](/examples/Coroutines.Examples.Animations)
+
 Example
 ---
 
