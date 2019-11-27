@@ -4,3 +4,5 @@ tests/Coroutines.Tests/bin
 src/Coroutines/bin
 src/Coroutines/obj
 .idea
+examples/Coroutines.Examples.Animations/bin
+examples/Coroutines.Examples.Animations/obj
