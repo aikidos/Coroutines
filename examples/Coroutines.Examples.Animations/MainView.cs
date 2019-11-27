@@ -33,6 +33,7 @@ namespace Coroutines.Examples.Animations
             yield return Animation.Move(button, leftBottom);
             yield return Animation.Move(button, leftTop);
 
+            // Restart the animation.
             yield return Routine.Reset;
         }
     }
