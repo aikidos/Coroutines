@@ -71,7 +71,7 @@ coroutine.Wait();
 *Output:*  
 > Length: 49950
 
-Result
+GetResult()
 ---
 
 ```c#
