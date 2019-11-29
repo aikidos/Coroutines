@@ -26,19 +26,14 @@ namespace Coroutines
             {
                 lock (_lock)
                 {
-                    var coroutineStatuses = _coroutines.Select(coroutine => coroutine.Status)
+                    if (_coroutines.Count == 0)
+                        return CoroutineStatus.RanToCompletion;
+                    
+                    var aggregate = _coroutines.Select(coroutine => coroutine.Status)
+                        .Distinct()
                         .ToArray();
 
-                    if (coroutineStatuses.All(status => status == CoroutineStatus.WaitingToRun))
-                        return CoroutineStatus.WaitingToRun;
-                
-                    if (coroutineStatuses.All(status => status == CoroutineStatus.RanToCompletion))
-                        return CoroutineStatus.RanToCompletion;
-                
-                    if (coroutineStatuses.All(status => status == CoroutineStatus.Canceled))
-                        return CoroutineStatus.Canceled;
-                
-                    return CoroutineStatus.Running;
+                    return aggregate.Length == 1 ? aggregate[0] : CoroutineStatus.Running;
                 }
             }
         }

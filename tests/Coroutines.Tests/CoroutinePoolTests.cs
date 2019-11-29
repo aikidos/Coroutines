@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Coroutines.Tests
 {
     public sealed class CoroutinePoolTests
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public CoroutinePoolTests(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
-
         [Fact]
         public void Status()
         {
@@ -66,26 +56,6 @@ namespace Coroutines.Tests
             Assert.Equal(CoroutineStatus.Canceled, pool.Status);
             Assert.Equal(CoroutineStatus.Canceled, coroutine.Status);
             Assert.Equal(1, i);
-        }
-
-        [Fact]
-        public void METHOD()
-        {
-            static IEnumerator<IRoutineAction> DoSomething()
-            {
-                // `Routine.Result` completes the routine like a `yield break`.
-                yield return Routine.Result("Hello, World!");
-            }
-
-            var coroutine = new Coroutine(DoSomething);
-
-            _testOutputHelper.WriteLine($"Status: {coroutine.Status}");
-
-            var result = coroutine.GetResult();
-
-            _testOutputHelper.WriteLine($"Status: {coroutine.Status}");
-
-            _testOutputHelper.WriteLine(result.ToString());
         }
     }
 }

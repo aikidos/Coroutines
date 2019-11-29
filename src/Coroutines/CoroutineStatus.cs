@@ -1,5 +1,4 @@
-﻿
-namespace Coroutines
+﻿namespace Coroutines
 {
     /// <summary>
     /// Represents the current stage in the lifecycle of a <see cref="ICoroutine"/>.
