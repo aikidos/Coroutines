@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Coroutines.Actions.Commands;
 
 namespace Coroutines
 {
-    internal sealed class Coroutine : ICoroutine, IDisposable
+    /// <summary>
+    /// Implementation of the coroutine. 
+    /// </summary>
+    public sealed class Coroutine : ICoroutine
     {
-        private readonly Func<IEnumerator<IRoutineReturn>> _factory;
-        private IEnumerator<IRoutineReturn>? _routine;
-        private IRoutineAwaiter? _awaiter;
+        private readonly Func<IEnumerator<IRoutineAction>> _function;
+        private IEnumerator<IRoutineAction>? _routine;
+        private ICoroutine? _awaiter;
         private object? _result;
 
         /// <inheritdoc />
@@ -16,11 +20,11 @@ namespace Coroutines
         /// <summary>
         /// Initializes a new <see cref="Coroutine"/>.
         /// </summary>
-        /// <param name="factory">Routine factory function.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="factory"/> parameter is null.</exception>
-        public Coroutine(Func<IEnumerator<IRoutineReturn>> factory)
+        /// <param name="function">Routine function.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="function"/> parameter is null.</exception>
+        public Coroutine(Func<IEnumerator<IRoutineAction>> function)
         {
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            _function = function ?? throw new ArgumentNullException(nameof(function));
         }
 
         /// <inheritdoc />
@@ -47,7 +51,7 @@ namespace Coroutines
 
             if (_routine == null)
             {
-                _routine = _factory();
+                _routine = _function();
                 Status = CoroutineStatus.Running;
             }
 
@@ -61,18 +65,22 @@ namespace Coroutines
             {
                 switch (_routine.Current)
                 {
-                    case IRoutineAwaiter awaiter:
-                        _awaiter?.Dispose();
-                        _awaiter = awaiter;
-                        _awaiter.Update();
+                    case ICoroutine child:
+                        if (child.Status == CoroutineStatus.WaitingToRun ||
+                            child.Status == CoroutineStatus.Running)
+                        {
+                            _awaiter?.Dispose();
+                            _awaiter = child;
+                            _awaiter.Update();
+                        }
                         break;
 
-                    case ResetReturn _:
+                    case ResetCommand _:
                         _routine?.Dispose();
-                        _routine = _factory();
+                        _routine = _function();
                         break;
-                            
-                    case ResultReturn result:
+
+                    case SetResultCommand result:
                         _result = result.Value;
                         Status = CoroutineStatus.RanToCompletion;
                         break;
@@ -81,11 +89,11 @@ namespace Coroutines
 
             return update;
         }
-
+        
         /// <inheritdoc />
         public void Wait()
         {
-            while(Update()) 
+            while (Update())
             { }
         }
 

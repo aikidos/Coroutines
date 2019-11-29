@@ -14,7 +14,7 @@ On platforms supporting netstandard 2.1+
 
 ```c#
 // Routine description.
-static IEnumerator<IRoutineReturn> Counter()
+static IEnumerator<IRoutineAction> Counter()
 {
     var random = new Random();
 
@@ -29,17 +29,17 @@ static IEnumerator<IRoutineReturn> Counter()
     }
 }
 
-// Create new scheduler.
-using var scheduler = new CoroutineScheduler();
+// Create new coroutine pool.
+using var pool = new CoroutinePool();
 
 for (int i = 0; i < 3; i++)
 {
-    // Start new coroutine execution.
-    scheduler.Run(Counter);
+    // Add a new coroutine to the pool.
+    pool.Add(new Coroutine(Counter));
 }
 
-// Wait for all running coroutines to complete.
-scheduler.WaitAll();
+// Wait for all coroutines to complete.
+pool.Wait();
 ```
 
 *Output:*
@@ -49,7 +49,7 @@ Await
 ---
 
 ```c#
-static IEnumerator<IRoutineReturn> GetLength()
+static IEnumerator<IRoutineAction> GetLength()
 {
     // Wait for the task to complete. 
     // At this point, execution pass to another routine.
@@ -63,8 +63,7 @@ static IEnumerator<IRoutineReturn> GetLength()
     Console.WriteLine($"Length: {result.Value.Length}");
 }
 
-using var scheduler = new CoroutineScheduler();
-var coroutine = scheduler.Run(GetLength);
+var coroutine = new Coroutine(GetLength);
 coroutine.Wait();
 ```
 
@@ -75,14 +74,13 @@ GetResult()
 ---
 
 ```c#
-static IEnumerator<IRoutineReturn> DoSomething()
+static IEnumerator<IRoutineAction> DoSomething()
 {
     // `Routine.Result` completes the routine like a `yield break`.
     yield return Routine.Result("Hello, World!");
 }
 
-using var scheduler = new CoroutineScheduler();
-var coroutine = scheduler.Run(DoSomething);
+var coroutine = new Coroutine(DoSomething);
 
 Console.WriteLine($"Status: {coroutine.Status}");
 

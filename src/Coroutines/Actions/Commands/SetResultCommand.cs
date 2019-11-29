@@ -1,9 +1,9 @@
-﻿namespace Coroutines
+﻿namespace Coroutines.Actions.Commands
 {
     /// <summary>
-    /// Represents the result of a routine.
+    /// Represents the set result of a routine.
     /// </summary>
-    public sealed class ResultReturn : IRoutineReturn
+    internal sealed class SetResultCommand : IRoutineAction
     {
         /// <summary>
         /// Value.
@@ -11,10 +11,10 @@
         public object Value { get; }
 
         /// <summary>
-        /// Initializes a new <see cref="ResultReturn"/>.
+        /// Initializes a new <see cref="SetResultCommand"/>.
         /// </summary>
         /// <param name="value">Value.</param>
-        public ResultReturn(object value)
+        public SetResultCommand(object value)
         {
             Value = value;
         }

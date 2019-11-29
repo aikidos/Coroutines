@@ -1,7 +1,7 @@
 ﻿namespace Coroutines
 {
     /// <summary>
-    /// Container for storing the result of an asynchronous operation.
+    /// Container for storing the result.
     /// </summary>
     /// <typeparam name="TValue">Type of the result value.</typeparam>
     public sealed class AwaitResult<TValue>

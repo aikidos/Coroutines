@@ -19,7 +19,7 @@ namespace Coroutines.Examples.Animations.Animations
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="speed"/> parameter is less than or equal to zero.</exception>
         /// <example>
         /// <code>
-        ///     static IEnumerator&lt;IRoutineReturn&gt; Movement()
+        ///     static IEnumerator&lt;IRoutineAction&gt; Movement()
         ///     {
         ///         yield return Animation.Move(button, new Point(10, 100));
         ///         yield return Animation.Move(button, new Point(100, 100));
@@ -27,12 +27,14 @@ namespace Coroutines.Examples.Animations.Animations
         ///     }
         /// </code>
         /// </example>
-        public static IRoutineReturn Move(Control control, Point moveTo, float speed = 0.02f)
+        public static ICoroutine Move(Control control, Point moveTo, float speed = 0.02f)
         {
-            if (control == null) throw new ArgumentNullException(nameof(control));
-            if (speed <= 0) throw new ArgumentOutOfRangeException(nameof(speed));
+            if (control == null) 
+                throw new ArgumentNullException(nameof(control));
+            if (speed <= 0) 
+                throw new ArgumentOutOfRangeException(nameof(speed));
 
-            return new Move(control, moveTo, speed);
+            return new MoveCoroutine(control, moveTo, speed);
         }
     }
 }

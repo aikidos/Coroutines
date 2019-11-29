@@ -8,7 +8,7 @@ namespace Coroutines.Examples.Animations.Animations
     /// <summary>
     /// Represents a movement animation.
     /// </summary>
-    internal sealed class Move : IRoutineAwaiter
+    internal sealed class MoveCoroutine : ICoroutine
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private readonly Control _control;
@@ -18,23 +18,31 @@ namespace Coroutines.Examples.Animations.Animations
         private float _alpha;
 
         /// <inheritdoc />
-        public RoutineAwaiterStatus Status { get; private set; } = RoutineAwaiterStatus.WaitingToRun;
+        public CoroutineStatus Status { get; private set; } = CoroutineStatus.WaitingToRun;
 
         /// <summary>
-        /// Initializes a new <see cref="Move"/>.
+        /// Initializes a new <see cref="MoveCoroutine"/>.
         /// </summary>
         /// <param name="control">The <see cref="Control"/> to be moved.</param>
         /// <param name="moveTo">The point to move the <see cref="Control"/>.</param>
         /// <param name="speed">Movement speed.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="control"/> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="speed"/> parameter is less than or equal to zero.</exception>
-        public Move(Control control, Point moveTo, float speed)
+        public MoveCoroutine(Control control, Point moveTo, float speed)
         {
-            if (speed <= 0) throw new ArgumentOutOfRangeException(nameof(speed));
+            if (speed <= 0) 
+                throw new ArgumentOutOfRangeException(nameof(speed));
 
             _control = control ?? throw new ArgumentNullException(nameof(control));
             _moveTo = moveTo;
             _speed = speed;
+        }
+
+        public object? GetResult()
+        {
+            Wait();
+
+            return null;
         }
 
         /// <inheritdoc />
@@ -48,16 +56,16 @@ namespace Coroutines.Examples.Animations.Animations
 
             switch (Status)
             {
-                case RoutineAwaiterStatus.WaitingToRun:
-                    Status = RoutineAwaiterStatus.Running;
+                case CoroutineStatus.WaitingToRun:
+                    Status = CoroutineStatus.Running;
                     _startPoint = _control.Location;
                     _stopwatch.Start();
                     return true;
                 
-                case RoutineAwaiterStatus.Running:
+                case CoroutineStatus.Running:
                     if (_control.Location == _moveTo)
                     {
-                        Status = RoutineAwaiterStatus.RanToCompletion;
+                        Status = CoroutineStatus.RanToCompletion;
                         return false;
                     }
 
@@ -72,7 +80,8 @@ namespace Coroutines.Examples.Animations.Animations
                     _stopwatch.Restart();
                     return true;
                 
-                case RoutineAwaiterStatus.RanToCompletion:
+                case CoroutineStatus.RanToCompletion:
+                case CoroutineStatus.Canceled:
                     return false;
                 
                 default:
@@ -80,8 +89,24 @@ namespace Coroutines.Examples.Animations.Animations
             }
         }
 
+        public void Wait()
+        {
+            while (Update())
+            { }
+        }
+
+        public void Cancel()
+        {
+            if (Status == CoroutineStatus.RanToCompletion)
+                return;
+
+            Status = CoroutineStatus.Canceled;
+        }
+
         /// <inheritdoc />
         public void Dispose()
-        { }
+        {
+            Cancel();
+        }
     }
 }

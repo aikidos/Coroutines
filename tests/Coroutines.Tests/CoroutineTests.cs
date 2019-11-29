@@ -10,17 +10,16 @@ namespace Coroutines.Tests
         public void Status()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler();
             var statuses = new List<CoroutineStatus>();
 
-            static IEnumerator<IRoutineReturn> Coroutine()
+            static IEnumerator<IRoutineAction> Coroutine()
             {
                 yield return Routine.Yield;
             }
+            
+            var coroutine = new Coroutine(Coroutine);
 
             // Act
-            var coroutine = scheduler.Run(Coroutine);
-            
             statuses.Add(coroutine.Status);
             coroutine.Update();
             statuses.Add(coroutine.Status);
@@ -28,34 +27,28 @@ namespace Coroutines.Tests
             statuses.Add(coroutine.Status);
 
             // Assert
-            Assert.Equal(new[]
-            {
-                CoroutineStatus.WaitingToRun,
-                CoroutineStatus.Running,
-                CoroutineStatus.RanToCompletion
-            }, statuses);
+            Assert.Equal(new[] { CoroutineStatus.WaitingToRun, CoroutineStatus.Running, CoroutineStatus.RanToCompletion }, statuses);
         }
         
         [Fact]
         public void Cancel()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler();
-
             int i = 0;
 
-            IEnumerator<IRoutineReturn> Coroutine()
+            IEnumerator<IRoutineAction> Coroutine()
             {
                 i++;
 
                 yield return Routine.Reset;
             }
+            
+            var coroutine = new Coroutine(Coroutine);
 
             // Act
-            var coroutine = scheduler.Run(Coroutine);
-            scheduler.Update();
+            coroutine.Update();
             coroutine.Cancel();
-            scheduler.WaitAll();
+            coroutine.Wait();
 
             // Assert
             Assert.Equal(CoroutineStatus.Canceled, coroutine.Status);
@@ -66,16 +59,15 @@ namespace Coroutines.Tests
         public void GetResult()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler();
-
-            static IEnumerator<IRoutineReturn> Coroutine()
+            static IEnumerator<IRoutineAction> Coroutine()
             {
                 yield return Routine.Result("Hello, World!");
                 yield return Routine.Result("Ignore.");
             }
+            
+            var coroutine = new Coroutine(Coroutine);
 
             // Act
-            var coroutine = scheduler.Run(Coroutine);
             var result = coroutine.GetResult();
 
             // Assert
@@ -84,25 +76,49 @@ namespace Coroutines.Tests
         }
         
         [Fact]
-        public void Await()
+        public void Await_Task()
         {
             // Arrange
-            using var scheduler = new CoroutineScheduler();
-
             string content = string.Empty;
 
-            IEnumerator<IRoutineReturn> Coroutine()
+            IEnumerator<IRoutineAction> Coroutine()
             {
                 yield return Routine.Await(out var result, () => Task.FromResult("Hello, World!"));
 
                 content = result.Value;
             }
 
+            var coroutine = new Coroutine(Coroutine);
+            
             // Act
-            scheduler.Run(Coroutine).Wait();
+            coroutine.Wait();
 
             // Assert
             Assert.Equal("Hello, World!", content);
+        }
+
+        [Fact]
+        public void Await_Coroutine()
+        {
+            // Arrange
+            IEnumerator<IRoutineAction> Child()
+            {
+                yield return Routine.Result("Hello, World!");
+            }
+
+            IEnumerator<IRoutineAction> Parent()
+            {
+                yield return Routine.Await(out var result, new Coroutine(Child));
+                yield return Routine.Result(result.Value.ToString().Length);
+            }
+
+            var coroutine = new Coroutine(Parent);
+
+            // Act
+            var length = coroutine.GetResult();
+
+            // Assert
+            Assert.Equal(13, length);
         }
     }
 }

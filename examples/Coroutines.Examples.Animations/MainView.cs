@@ -9,7 +9,7 @@ namespace Coroutines.Examples.Animations
     public partial class MainView : Form
     {
         private readonly Timer _updateTimer = new Timer { Interval = 16 };
-        private readonly ICoroutineScheduler _scheduler = new CoroutineScheduler();
+        private readonly ICoroutinePool _pool = new CoroutinePool();
 
         public MainView()
         {
@@ -23,14 +23,15 @@ namespace Coroutines.Examples.Animations
             const int offset = 10;
 
             var bounds = new Rectangle(new Point(offset, offset), ClientSize - button.Size - new Size(offset * 2, offset * 2));
+            var coroutine = new Coroutine(() => Movement(button, bounds));
+            
+            _pool.Add(coroutine);
 
-            _scheduler.Run(() => Movement(button, bounds));
-
-            _updateTimer.Tick += (sender, args) => _scheduler.Update();
+            _updateTimer.Tick += (sender, args) => _pool.Update();
             _updateTimer.Start();
         }
 
-        private static IEnumerator<IRoutineReturn> Movement(Control control, Rectangle bounds)
+        private static IEnumerator<IRoutineAction> Movement(Control control, Rectangle bounds)
         {
             yield return Animation.Move(control, new Point(bounds.Right, bounds.Top));
             yield return Animation.Move(control, new Point(bounds.Right, bounds.Bottom));

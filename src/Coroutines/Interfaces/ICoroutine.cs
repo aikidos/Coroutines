@@ -1,18 +1,18 @@
-﻿namespace Coroutines
+﻿using System;
+
+namespace Coroutines
 {
     /// <summary>
     /// Interface used for implementing coroutine.
     /// </summary>
-    public interface ICoroutine
+    public interface ICoroutine : IRoutineAction, IDisposable
     {
         /// <summary>
         /// Current status.
         /// </summary>
         /// <example>
         /// <code>
-        ///     using var scheduler = new CoroutineScheduler();
-        ///  
-        ///     var coroutine = scheduler.Run(DoSomething);
+        ///     var coroutine = new Coroutine(...);
         ///  
         ///     Console.WriteLine(coroutine.Status); // WaitingToRun
         /// </code>
@@ -25,8 +25,7 @@
         /// </summary>
         /// <example>
         /// <code>
-        ///     using var scheduler = new CoroutineScheduler();
-        ///     var coroutine = scheduler.Run(DoSomething);
+        ///     var coroutine = new Coroutine(...);
         ///  
         ///     Console.WriteLine(coroutine.Status); // WaitingToRun
         ///  
@@ -36,15 +35,14 @@
         /// </code>
         /// </example>
         object? GetResult();
-
+        
         /// <summary>
         /// Updates the execution logic of the current coroutine.
         /// If incomplete then returns `True`.
         /// </summary>
         /// <example>
         /// <code>
-        ///     using var scheduler = new CoroutineScheduler();
-        ///     var coroutine = scheduler.Run(DoSomething);
+        ///     var coroutine = new Coroutine(...);
         ///  
         ///     Console.WriteLine(coroutine.Status); // WaitingToRun
         ///  
@@ -63,8 +61,7 @@
         /// </summary>
         /// <example>
         /// <code>
-        ///     using var scheduler = new CoroutineScheduler();
-        ///     var coroutine = scheduler.Run(DoSomething);
+        ///     var coroutine = new Coroutine(...);
         ///  
         ///     Console.WriteLine(coroutine.Status); // WaitingToRun
         ///  
@@ -80,8 +77,7 @@
         /// </summary>
         /// <example>
         /// <code>
-        ///     using var scheduler = new CoroutineScheduler();
-        ///     var coroutine = scheduler.Run(DoSomething);
+        ///     var coroutine = new Coroutine(...);
         ///  
         ///     Console.WriteLine(coroutine.Status); // WaitingToRun
         ///  
