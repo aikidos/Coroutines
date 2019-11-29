@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Coroutines.Actions
 {
     /// <summary>
-    /// Represents an asynchronous task that will complete after an internal <see cref="Task"/> is completed.
+    /// Represents a synchronous task that will complete after a time delay.
     /// </summary>
-    internal sealed class WaitTaskCoroutine : ICoroutine
+    internal sealed class SyncDelayCoroutine : ICoroutine
     {
-        private readonly Func<Task> _taskFactory;
-        private Task? _task;
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly TimeSpan _delay;
 
         /// <inheritdoc />
         public CoroutineStatus Status { get; private set; } = CoroutineStatus.WaitingToRun;
 
         /// <summary>
-        /// Initializes a new <see cref="WaitTaskCoroutine"/>.
+        /// Initializes a new <see cref="SyncDelayCoroutine"/>.
         /// </summary>
-        /// <param name="taskFactory">Task factory function.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
-        public WaitTaskCoroutine(Func<Task> taskFactory)
+        /// <param name="delay">Time delay.</param>
+        public SyncDelayCoroutine(TimeSpan delay)
         {
-            _taskFactory = taskFactory ?? throw new ArgumentNullException(nameof(taskFactory));
+            _delay = delay;
         }
 
         /// <inheritdoc />
@@ -39,25 +38,25 @@ namespace Coroutines.Actions
             {
                 case CoroutineStatus.WaitingToRun:
                     Status = CoroutineStatus.Running;
-                    _task = _taskFactory();
+                    _stopwatch.Start();
                     return true;
                 
                 case CoroutineStatus.Running:
-                    if (_task?.IsCompleted != true)
+                    if (!(_stopwatch.ElapsedMilliseconds >= _delay.TotalMilliseconds)) 
                         return true;
-
+                    
                     Status = CoroutineStatus.RanToCompletion;
                     return false;
-                
+
                 case CoroutineStatus.RanToCompletion:
                 case CoroutineStatus.Canceled:
                     return false;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         /// <inheritdoc />
         public void Wait()
         {

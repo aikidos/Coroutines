@@ -1,33 +1,31 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace Coroutines.Actions
 {
     /// <summary>
-    /// Represents an asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
+    /// Represents a synchronous task that will complete after an internal implementation of <see cref="ICoroutine"/> is completed.
     /// </summary>
-    internal sealed class WaitTaskTCoroutine<TValue> : ICoroutine
+    internal sealed class SyncWaitTCoroutine : ICoroutine
     {
-        private readonly Func<AwaitResult<TValue>, Task<TValue>> _taskFactory;
-        private readonly AwaitResult<TValue> _result;
-        private Task<TValue>? _task;
+        private readonly AwaitResult<object?> _result;
+        private readonly ICoroutine _coroutine;
 
         /// <inheritdoc />
         public CoroutineStatus Status { get; private set; } = CoroutineStatus.WaitingToRun;
 
         /// <summary>
-        /// Initializes a new <see cref="WaitTaskTCoroutine{TValue}"/>.
+        /// Initializes a new <see cref="SyncWaitTCoroutine"/>.
         /// </summary>
         /// <param name="result">Container for storing the result.</param>
-        /// <param name="taskFactory">Task factory function.</param>
+        /// <param name="coroutine">Implementation of the <see cref="ICoroutine"/></param>
         /// <exception cref="ArgumentNullException">
         ///     The <paramref name="result"/> parameter is null.
-        ///     The <paramref name="taskFactory"/> parameter is null.
+        ///     The <paramref name="coroutine"/> parameter is null.
         /// </exception>
-        public WaitTaskTCoroutine(AwaitResult<TValue> result, Func<AwaitResult<TValue>, Task<TValue>> taskFactory)
+        public SyncWaitTCoroutine(AwaitResult<object?> result, ICoroutine coroutine)
         {
             _result = result ?? throw new ArgumentNullException(nameof(result));
-            _taskFactory = taskFactory ?? throw new ArgumentNullException(nameof(taskFactory));
+            _coroutine = coroutine ?? throw new ArgumentNullException(nameof(coroutine));
         }
 
         /// <inheritdoc />
@@ -35,7 +33,7 @@ namespace Coroutines.Actions
         {
             Wait();
 
-            return _task!.Result;
+            return _result.Value;
         }
 
         /// <inheritdoc />
@@ -45,20 +43,23 @@ namespace Coroutines.Actions
             {
                 case CoroutineStatus.WaitingToRun:
                     Status = CoroutineStatus.Running;
-                    _task = _taskFactory(_result);
                     return true;
 
                 case CoroutineStatus.Running:
-                    if (_task?.IsCompleted != true)
+                    if (_coroutine.Update())
                         return true;
 
+                    _result.Value = _coroutine.GetResult();
+                    
+                    _coroutine.Dispose();
+                    
                     Status = CoroutineStatus.RanToCompletion;
                     return false;
 
                 case CoroutineStatus.RanToCompletion:
                 case CoroutineStatus.Canceled:
                     return false;
-
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -84,6 +85,8 @@ namespace Coroutines.Actions
         public void Dispose()
         {
             Cancel();
+
+            _coroutine?.Dispose();
         }
     }
 }

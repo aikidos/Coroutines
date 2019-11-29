@@ -62,7 +62,7 @@ namespace Coroutines
         /// </example>
         public static ICoroutine Delay(TimeSpan delay)
         {
-            return new DelayCoroutine(delay);
+            return new SyncDelayCoroutine(delay);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Coroutines
         /// </example>
         public static ICoroutine Delay(double milliseconds)
         {
-            return new DelayCoroutine(TimeSpan.FromMilliseconds(milliseconds));
+            return new SyncDelayCoroutine(TimeSpan.FromMilliseconds(milliseconds));
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Coroutines
             if (taskFactory == null) 
                 throw new ArgumentNullException(nameof(taskFactory));
 
-            return new WaitTaskCoroutine(taskFactory);
+            return new AsyncWaitCoroutine(taskFactory);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Coroutines
 
             result = new AwaitResult<TValue>();
 
-            return new WaitTaskTCoroutine<TValue>(result, async res => res.Value = await taskFactory());
+            return new AsyncWaitTCoroutine<TValue>(result, async res => res.Value = await taskFactory());
         }
         
         /// <summary>
@@ -168,11 +168,11 @@ namespace Coroutines
             if (coroutine == null) 
                 throw new ArgumentNullException(nameof(coroutine));
 
-            return new WaitCoroutineCoroutine(coroutine);
+            return new SyncWaitCoroutine(coroutine);
         }
         
         /// <summary>
-        /// Returns n synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
+        /// Returns a synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
         /// </summary>
         /// <param name="result">Container for storing the result.</param>
         /// <param name="coroutine">Implementation of the coroutine.</param>
@@ -199,7 +199,7 @@ namespace Coroutines
 
             result = new AwaitResult<object?>();
 
-            return new WaitCoroutineTCoroutine(result, coroutine);
+            return new SyncWaitTCoroutine(result, coroutine);
         }
 
         /// <summary>
