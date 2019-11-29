@@ -5,7 +5,7 @@ Coroutines
 
 A simple implementing coroutines in C#.
 
-[![example](/examples/Coroutines.Examples.Animations/animation.gif)](/examples/Coroutines.Examples.Animations)
+[![example](/examples/Coroutines.Examples.Animations/animation.gif?timestamp=20191129)](/examples/Coroutines.Examples.Animations)
 
 Example
 ---
@@ -64,6 +64,7 @@ static IEnumerator<IRoutineAction> GetLength()
 }
 
 var coroutine = new Coroutine(GetLength);
+
 coroutine.Wait();
 ```
 
