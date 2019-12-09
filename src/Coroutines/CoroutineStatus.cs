@@ -1,7 +1,7 @@
 ﻿namespace Coroutines
 {
     /// <summary>
-    /// Represents the current stage in the lifecycle of a <see cref="ICoroutine"/>.
+    /// Represents the current stage in the lifecycle of a coroutine.
     /// </summary>
     public enum CoroutineStatus
     {

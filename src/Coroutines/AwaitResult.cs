@@ -1,13 +1,13 @@
 ﻿namespace Coroutines
 {
     /// <summary>
-    /// Container for storing the result.
+    /// Container for storing the task result.
     /// </summary>
-    /// <typeparam name="TValue">Type of the result value.</typeparam>
+    /// <typeparam name="TValue">Type of the value of the task result.</typeparam>
     public sealed class AwaitResult<TValue>
     {
         /// <summary>
-        /// Value of the result.
+        /// Gets the value of the task result.
         /// </summary>
         public TValue Value { get; set; } = default!;
     }

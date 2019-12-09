@@ -11,7 +11,7 @@ namespace Coroutines
     public static class Routine
     {
         /// <summary>
-        /// `Yield`-command.
+        /// Gets the `Yield`-command.
         /// </summary>
         /// <example>
         /// <code>
@@ -28,7 +28,7 @@ namespace Coroutines
         public static IRoutineAction Yield { get; } = new YieldCommand();
 
         /// <summary>
-        /// Command to restart the routine.
+        /// Gets the command to restart a routine.
         /// </summary>
         /// <example>
         /// <code>
@@ -45,7 +45,7 @@ namespace Coroutines
         public static IRoutineAction Reset { get; } = new ResetCommand();
 
         /// <summary>
-        /// Returns a synchronous task that will complete after a time delay.
+        /// Returns the synchronous task that will complete after a time delay.
         /// </summary>
         /// <param name="delay">Time delay.</param>
         /// <example>
@@ -66,7 +66,7 @@ namespace Coroutines
         }
 
         /// <summary>
-        /// Returns a synchronous task that will complete after a time delay.
+        /// Returns the synchronous task that will complete after a time delay.
         /// </summary>
         /// <param name="milliseconds">Time delay (in milliseconds).</param>
         /// <example>
@@ -87,7 +87,7 @@ namespace Coroutines
         }
 
         /// <summary>
-        /// Returns an asynchronous task that will complete after an internal <see cref="Task"/> is completed.
+        /// Returns the asynchronous task that will complete after an internal <see cref="Task"/> is completed.
         /// </summary>
         /// <param name="taskFactory">Task factory function.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
@@ -112,7 +112,7 @@ namespace Coroutines
         }
 
         /// <summary>
-        /// Returns an asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
+        /// Returns the asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
         /// </summary>
         /// <param name="result">Container for storing the result.</param>
         /// <param name="taskFactory">Task factory function.</param>
@@ -145,7 +145,7 @@ namespace Coroutines
         }
         
         /// <summary>
-        /// Returns a synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
+        /// Returns the synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
         /// </summary>
         /// <param name="coroutine">Implementation of the coroutine.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="coroutine"/> parameter is null.</exception>
@@ -172,7 +172,7 @@ namespace Coroutines
         }
         
         /// <summary>
-        /// Returns a synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
+        /// Returns the synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
         /// </summary>
         /// <param name="result">Container for storing the result.</param>
         /// <param name="coroutine">Implementation of the coroutine.</param>
@@ -205,7 +205,7 @@ namespace Coroutines
         /// <summary>
         /// Returns the result of a routine.
         /// </summary>
-        /// <param name="value">Value.</param>
+        /// <param name="value">New value of the result of a routine.</param>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineAction&gt; GetMessage()

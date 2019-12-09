@@ -21,7 +21,9 @@ namespace Coroutines
         /// Initializes a new <see cref="Coroutine"/>.
         /// </summary>
         /// <param name="function">Routine function.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="function"/> parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="function"/> parameter is null.
+        /// </exception>
         public Coroutine(Func<IEnumerator<IRoutineAction>> function)
         {
             _function = function ?? throw new ArgumentNullException(nameof(function));

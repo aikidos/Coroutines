@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Coroutines.Actions
 {
     /// <summary>
-    /// Represents a synchronous task that will complete after a time delay.
+    /// Represents the synchronous task that will complete after a time delay.
     /// </summary>
     internal sealed class SyncDelayCoroutine : ICoroutine
     {

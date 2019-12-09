@@ -8,7 +8,7 @@ namespace Coroutines
     public interface ICoroutine : IRoutineAction, IDisposable
     {
         /// <summary>
-        /// Current status.
+        /// Gets the current status.
         /// </summary>
         /// <example>
         /// <code>

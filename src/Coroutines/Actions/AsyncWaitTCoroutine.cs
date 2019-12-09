@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Coroutines.Actions
 {
     /// <summary>
-    /// Represents an asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
+    /// Represents the asynchronous task that will complete after an internal <see cref="Task{TResult}"/> is completed.
     /// </summary>
     internal sealed class AsyncWaitTCoroutine<TValue> : ICoroutine
     {
@@ -18,7 +18,7 @@ namespace Coroutines.Actions
         /// <summary>
         /// Initializes a new <see cref="AsyncWaitTCoroutine{TValue}"/>.
         /// </summary>
-        /// <param name="result">Container for storing the result.</param>
+        /// <param name="result">Container for storing the task result.</param>
         /// <param name="taskFactory">Task factory function.</param>
         /// <exception cref="ArgumentNullException">
         ///     The <paramref name="result"/> parameter is null.

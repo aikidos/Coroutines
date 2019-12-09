@@ -3,7 +3,7 @@
 namespace Coroutines.Actions
 {
     /// <summary>
-    /// Represents a synchronous task that will complete after an internal implementation of <see cref="ICoroutine"/> is completed.
+    /// Represents the synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
     /// </summary>
     internal sealed class SyncWaitTCoroutine : ICoroutine
     {
@@ -16,7 +16,7 @@ namespace Coroutines.Actions
         /// <summary>
         /// Initializes a new <see cref="SyncWaitTCoroutine"/>.
         /// </summary>
-        /// <param name="result">Container for storing the result.</param>
+        /// <param name="result">Container for storing the task result.</param>
         /// <param name="coroutine">Implementation of the <see cref="ICoroutine"/></param>
         /// <exception cref="ArgumentNullException">
         ///     The <paramref name="result"/> parameter is null.

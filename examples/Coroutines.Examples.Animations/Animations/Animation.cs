@@ -10,13 +10,17 @@ namespace Coroutines.Examples.Animations.Animations
     public static class Animation
     {
         /// <summary>
-        /// Movement animation.
+        /// Returns the movement animation.
         /// </summary>
         /// <param name="control">The <see cref="Control"/> to be moved.</param>
         /// <param name="moveTo">The point to move the <see cref="Control"/>.</param>
         /// <param name="speed">Movement speed.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="control"/> parameter is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="speed"/> parameter is less than or equal to zero.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="control"/> parameter is null.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     The <paramref name="speed"/> parameter is less than or equal to zero.
+        /// </exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineAction&gt; Movement()

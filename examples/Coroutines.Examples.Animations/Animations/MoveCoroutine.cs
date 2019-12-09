@@ -6,7 +6,7 @@ using System.Windows.Forms;
 namespace Coroutines.Examples.Animations.Animations
 {
     /// <summary>
-    /// Represents a movement animation.
+    /// Represents the movement animation.
     /// </summary>
     internal sealed class MoveCoroutine : ICoroutine
     {
@@ -26,8 +26,12 @@ namespace Coroutines.Examples.Animations.Animations
         /// <param name="control">The <see cref="Control"/> to be moved.</param>
         /// <param name="moveTo">The point to move the <see cref="Control"/>.</param>
         /// <param name="speed">Movement speed.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="control"/> parameter is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="speed"/> parameter is less than or equal to zero.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="control"/> parameter is null.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     The <paramref name="speed"/> parameter is less than or equal to zero.
+        /// </exception>
         public MoveCoroutine(Control control, Point moveTo, float speed)
         {
             if (speed <= 0) 
