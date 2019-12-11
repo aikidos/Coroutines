@@ -29,11 +29,14 @@ namespace Coroutines
                     if (_coroutines.Count == 0)
                         return CoroutineStatus.RanToCompletion;
                     
-                    var aggregate = _coroutines.Select(coroutine => coroutine.Status)
+                    var aggregate = _coroutines
+                        .Select(coroutine => coroutine.Status)
                         .Distinct()
                         .ToArray();
 
-                    return aggregate.Length == 1 ? aggregate[0] : CoroutineStatus.Running;
+                    return aggregate.Length == 1 
+                        ? aggregate[0] 
+                        : CoroutineStatus.Running;
                 }
             }
         }
