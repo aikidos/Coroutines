@@ -100,4 +100,4 @@ Hello, World!
 Licence
 ===
 
-[MIT](https://en.wikipedia.org/wiki/MIT_License)
+[MIT](LICENSE)
