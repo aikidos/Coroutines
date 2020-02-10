@@ -50,7 +50,9 @@ namespace Coroutines.Actions
 
                 case CoroutineStatus.Running:
                     if (_task?.IsCompleted != true)
+                    {
                         return true;
+                    }
 
                     Status = CoroutineStatus.RanToCompletion;
                     return false;
@@ -75,7 +77,9 @@ namespace Coroutines.Actions
         public void Cancel()
         {
             if (Status == CoroutineStatus.RanToCompletion)
+            {
                 return;
+            }
 
             Status = CoroutineStatus.Canceled;
         }

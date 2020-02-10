@@ -34,7 +34,7 @@ namespace Coroutines.Tests
         public void Cancel()
         {
             // Arrange
-            int i = 0;
+            var i = 0;
 
             IEnumerator<IRoutineAction> Coroutine()
             {
@@ -79,7 +79,7 @@ namespace Coroutines.Tests
         public void Await_Task()
         {
             // Arrange
-            string content = string.Empty;
+            var content = string.Empty;
 
             IEnumerator<IRoutineAction> Coroutine()
             {

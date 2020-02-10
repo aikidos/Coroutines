@@ -42,8 +42,10 @@ namespace Coroutines.Actions
                     return true;
                 
                 case CoroutineStatus.Running:
-                    if (!(_stopwatch.ElapsedMilliseconds >= _delay.TotalMilliseconds)) 
+                    if (!(_stopwatch.ElapsedMilliseconds >= _delay.TotalMilliseconds))
+                    {
                         return true;
+                    }
                     
                     Status = CoroutineStatus.RanToCompletion;
                     return false;
@@ -68,7 +70,9 @@ namespace Coroutines.Actions
         public void Cancel()
         {
             if (Status == CoroutineStatus.RanToCompletion)
+            {
                 return;
+            }
 
             Status = CoroutineStatus.Canceled;
         }

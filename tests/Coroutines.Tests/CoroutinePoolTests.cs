@@ -35,7 +35,7 @@ namespace Coroutines.Tests
         public void Cancel()
         {
             // Arrange
-            int i = 0;
+            var i = 0;
 
             IEnumerator<IRoutineAction> Coroutine()
             {

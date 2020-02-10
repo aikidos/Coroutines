@@ -76,8 +76,8 @@ namespace Coroutines.Examples.Animations.Animations
                     _alpha += _speed * (_stopwatch.ElapsedMilliseconds / 16f);
                     _alpha = Math.Clamp(_alpha, 0, 1);
 
-                    int x = (int) Lerp(_startPoint.X, _moveTo.X, _alpha);
-                    int y = (int) Lerp(_startPoint.Y, _moveTo.Y, _alpha);
+                    var x = (int) Lerp(_startPoint.X, _moveTo.X, _alpha);
+                    var y = (int) Lerp(_startPoint.Y, _moveTo.Y, _alpha);
 
                     _control.Location = new Point(x, y);
 
@@ -102,7 +102,9 @@ namespace Coroutines.Examples.Animations.Animations
         public void Cancel()
         {
             if (Status == CoroutineStatus.RanToCompletion)
+            {
                 return;
+            }
 
             Status = CoroutineStatus.Canceled;
         }

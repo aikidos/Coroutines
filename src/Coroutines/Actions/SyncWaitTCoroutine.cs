@@ -47,7 +47,9 @@ namespace Coroutines.Actions
 
                 case CoroutineStatus.Running:
                     if (_coroutine.Update())
+                    {
                         return true;
+                    }
 
                     _result.Value = _coroutine.GetResult();
                     
@@ -76,7 +78,9 @@ namespace Coroutines.Actions
         public void Cancel()
         {
             if (Status == CoroutineStatus.RanToCompletion)
+            {
                 return;
+            }
 
             Status = CoroutineStatus.Canceled;
         }

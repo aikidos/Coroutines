@@ -90,7 +90,9 @@ namespace Coroutines
         /// Returns the asynchronous task that will complete after an internal <see cref="Task"/> is completed.
         /// </summary>
         /// <param name="taskFactory">Task factory function.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="taskFactory"/> parameter is null.
+        /// </exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineAction&gt; DoSomething()
@@ -116,7 +118,9 @@ namespace Coroutines
         /// </summary>
         /// <param name="result">Container for storing the result.</param>
         /// <param name="taskFactory">Task factory function.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="taskFactory"/> parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="taskFactory"/> parameter is null.
+        /// </exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineAction&gt; DoSomething()
@@ -148,7 +152,9 @@ namespace Coroutines
         /// Returns the synchronous task that will complete after an internal <see cref="ICoroutine"/> is completed.
         /// </summary>
         /// <param name="coroutine">Implementation of the coroutine.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="coroutine"/> parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="coroutine"/> parameter is null.
+        /// </exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineAction&gt; DoSomething()
@@ -176,7 +182,9 @@ namespace Coroutines
         /// </summary>
         /// <param name="result">Container for storing the result.</param>
         /// <param name="coroutine">Implementation of the coroutine.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="coroutine"/> parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     The <paramref name="coroutine"/> parameter is null.
+        /// </exception>
         /// <example>
         /// <code>
         ///     static IEnumerator&lt;IRoutineAction&gt; DoSomething()

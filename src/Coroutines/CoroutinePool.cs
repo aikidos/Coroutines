@@ -27,7 +27,9 @@ namespace Coroutines
                 lock (_lock)
                 {
                     if (_coroutines.Count == 0)
+                    {
                         return CoroutineStatus.RanToCompletion;
+                    }
                     
                     var aggregate = _coroutines
                         .Select(coroutine => coroutine.Status)

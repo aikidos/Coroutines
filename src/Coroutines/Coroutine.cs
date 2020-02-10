@@ -57,7 +57,7 @@ namespace Coroutines
                 Status = CoroutineStatus.Running;
             }
 
-            bool update = _routine.MoveNext();
+            var update = _routine.MoveNext();
 
             if (!update)
             {
@@ -103,7 +103,9 @@ namespace Coroutines
         public void Cancel()
         {
             if (Status == CoroutineStatus.RanToCompletion)
+            {
                 return;
+            }
             
             Status = CoroutineStatus.Canceled;
         }

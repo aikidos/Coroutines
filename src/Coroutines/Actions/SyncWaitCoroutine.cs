@@ -43,7 +43,9 @@ namespace Coroutines.Actions
 
                 case CoroutineStatus.Running:
                     if (_coroutine.Update())
+                    {
                         return true;
+                    }
                     
                     _coroutine.Dispose();
 
@@ -70,7 +72,9 @@ namespace Coroutines.Actions
         public void Cancel()
         {
             if (Status == CoroutineStatus.RanToCompletion)
+            {
                 return;
+            }
 
             Status = CoroutineStatus.Canceled;
         }
